@@ -1,26 +1,8 @@
 (() => {
   const parts = Array.from(
-    { length: 10 },
-    (_, index) => `./cloud-v21/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
+    { length: 9 },
+    (_, index) => `./cloud-v21-packed/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
   );
-  const repairs = [
-    ['email: cleanEmail(form.email.value)),', 'email: cleanEmail(form.email.value),'],
-    ["toLocaleDateString('v'b-NO')", "toLocaleDateString('nb-NO')"],
-    ["icon: row.icon || '📦\", color:", "icon: row.icon || '📦', color:"],
-    ["icon: row.icon || '📦\", kind:", "icon: row.icon || '📦', kind:"],
-  ];
-
-  function repairSource(input) {
-    let source = input;
-    for (const [broken, fixed] of repairs) {
-      const occurrences = source.split(broken).length - 1;
-      if (occurrences !== 1) {
-        throw new Error(`Uventet antall forekomster av kjent kildefeil: ${occurrences}`);
-      }
-      source = source.replace(broken, fixed);
-    }
-    return source;
-  }
 
   function decodePart(base64) {
     const binary = atob(base64.replace(/\s+/g, ''));
@@ -47,8 +29,16 @@
       if (failed) throw new Error(`Kunne ikke laste appkjernen (${failed.status})`);
 
       const encodedParts = await Promise.all(responses.map((response) => response.text()));
-      const bytes = joinBytes(encodedParts.map(decodePart));
-      const source = repairSource(new TextDecoder().decode(bytes));
+      const compressed = joinBytes(encodedParts.map(decodePart));
+
+      if (typeof DecompressionStream !== 'function') {
+        throw new Error('Nettleseren støtter ikke utpakking av appkjernen');
+      }
+
+      const stream = new Blob([compressed])
+        .stream()
+        .pipeThrough(new DecompressionStream('gzip'));
+      const source = await new Response(stream).text();
 
       if (!source.includes("const VERSION = '2.1.0'")) {
         throw new Error('Feil versjon av appkjernen');
