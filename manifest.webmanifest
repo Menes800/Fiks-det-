@@ -1,7 +1,7 @@
 {
   "name": "Hvor er den?",
   "short_name": "Hvor er den?",
-  "description": "Finn ting, kasser, skap og skuffer i hjemmet uten å lete.",
+  "description": "Finn og del ting, kasser, skap og skuffer i hjemmet.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -9,8 +9,16 @@
   "background_color": "#f6f5fa",
   "theme_color": "#f6f5fa",
   "lang": "nb-NO",
-  "categories": ["productivity", "utilities"],
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
   "icons": [
-    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }

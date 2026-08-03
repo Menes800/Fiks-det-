@@ -1,8 +1,10 @@
-const CACHE = 'hvor-er-den-v5';
+const CACHE = 'hvor-er-den-v6';
 const ASSETS = [
   './', './index.html', './styles.css?v=4', './v1.css?v=1',
   './app-model.js?v=1', './app-core.js?v=1', './app-render.js?v=1',
-  './app-items.js?v=1', './app-managers.js?v=1', './app-events.js?v=1',
+  './cloud-loader.js?v=2',
+  './cloud.js.gz?v=1',
+  './ui-1.js?v=1', './ui-2.js?v=1', './ui-3.js?v=1', './ui-4.js?v=1', './ui-mount.js?v=1',
   './manifest.webmanifest', './icon.svg',
 ];
 
