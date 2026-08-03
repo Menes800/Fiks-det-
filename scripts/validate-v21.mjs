@@ -11,6 +11,7 @@ let source = Buffer.from(base64, 'base64').toString('utf8');
 const repairs = [
   ['email: cleanEmail(form.email.value)),', 'email: cleanEmail(form.email.value),'],
   ["toLocaleDateString('v'b-NO')", "toLocaleDateString('nb-NO')"],
+  ["icon: row.icon || '📦\", color:", "icon: row.icon || '📦', color:"],
 ];
 for (const [broken, fixed] of repairs) {
   const occurrences = source.split(broken).length - 1;
