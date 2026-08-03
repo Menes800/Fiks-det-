@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="nb">
+<html lang="nb" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b0d12" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="description" content="Hvor er den? husker hvor tingene dine ligger." />
+    <meta name="theme-color" content="#f6f5fa" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Hvor er den? husker hvor tingene i hjemmet ligger." />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Hvor er den?" />
     <title>Hvor er den?</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icon.svg" />
-    <link rel="stylesheet" href="./styles.css?v=3" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
   </head>
   <body>
     <svg class="svg-sprite" aria-hidden="true">
@@ -22,6 +22,7 @@
       <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
       <symbol id="i-rooms" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
       <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-5 3.5-7 8-7s7.2 2 8 7"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.5-4.4 2.7-6.5 6-6.5s5.5 2.1 6 6.5M15 14c3.2 0 5.2 1.8 5.8 5"/></symbol>
       <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></symbol>
       <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
       <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
@@ -38,9 +39,13 @@
       <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h4l1.5-2h5L16 7h4v13H4z"/><circle cx="12" cy="13" r="4"/></symbol>
       <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
       <symbol id="i-box" viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4zM4 7v10l8 4 8-4V7M12 11v10"/></symbol>
-      <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
       <symbol id="i-restore" viewBox="0 0 24 24"><path d="M4 7v5h5M5.5 17a8 8 0 1 0 .3-10.3L4 8"/></symbol>
       <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-6v-2M14 18h2"/></symbol>
+      <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.2a2 2 0 0 0 1.6-3.2l-.5-.7a1.5 1.5 0 0 1 1.2-2.4H18A3 3 0 0 0 21 12a9 9 0 0 0-9-9z"/><path d="M7.5 9h.01M10 6.5h.01M14 6.5h.01M16.5 9h.01"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M4 4h7l9 9-7 7-9-9z"/><circle cx="8" cy="8" r="1"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+      <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h11a4 4 0 0 0 .6-8A7 7 0 0 0 5.3 8.7 4.5 4.5 0 0 0 7 18z"/></symbol>
     </svg>
 
     <div class="app-shell" id="app-shell">
@@ -48,7 +53,10 @@
         <section class="screen is-active" data-screen="home" aria-labelledby="home-title">
           <header class="screen-header home-header">
             <div>
-              <p class="overline">HVOR ER DEN?</p>
+              <button class="home-switcher" type="button" data-open-manager="home">
+                <span id="home-switcher-name">Mitt hjem</span>
+                <svg><use href="#i-chevron" /></svg>
+              </button>
               <h1 id="home-title">Hjem</h1>
             </div>
             <button class="round-button" type="button" data-open-add aria-label="Legg til ting">
@@ -77,32 +85,31 @@
             <div class="room-grid" id="home-rooms"></div>
           </section>
 
-          <section class="privacy-card">
-            <div class="privacy-icon"><svg><use href="#i-lock" /></svg></div>
+          <section class="status-card">
+            <div class="status-icon"><svg><use href="#i-cloud" /></svg></div>
             <div>
-              <strong>Privat på telefonen din</strong>
-              <p>Alt lagres lokalt. Ingen konto eller abonnement.</p>
+              <strong>Klar for felles hjem</strong>
+              <p>Prototypen lagrer lokalt. Konto, Apple-innlogging og synkronisering kobles på senere.</p>
             </div>
           </section>
         </section>
 
         <section class="screen" data-screen="search" aria-labelledby="search-title">
-          <header class="screen-header">
-            <h1 id="search-title">Søk</h1>
-          </header>
+          <header class="screen-header"><h1 id="search-title">Søk</h1></header>
 
           <label class="search-field">
             <svg><use href="#i-search" /></svg>
             <input id="search-input" type="search" autocomplete="off" placeholder="Søk etter ting, rom eller plassering" />
-            <button class="clear-search" id="clear-search" type="button" aria-label="Tøm søk" hidden>
-              <svg><use href="#i-close" /></svg>
-            </button>
+            <button class="clear-search" id="clear-search" type="button" aria-label="Tøm søk" hidden><svg><use href="#i-close" /></svg></button>
           </label>
 
           <section class="content-block" id="category-section">
             <div class="section-title-row">
               <h2>Kategorier</h2>
-              <button class="link-button" id="clear-category" type="button" hidden>Nullstill</button>
+              <div class="section-actions">
+                <button class="link-button" id="clear-category" type="button" hidden>Nullstill</button>
+                <button class="link-button" type="button" data-open-manager="categories">Rediger</button>
+              </div>
             </div>
             <div class="category-list" id="category-list"></div>
           </section>
@@ -122,10 +129,7 @@
           </section>
 
           <section class="content-block" id="recent-search-section">
-            <div class="section-title-row">
-              <h2>Nylige søk</h2>
-              <button class="link-button" id="clear-recent-searches" type="button">Tøm</button>
-            </div>
+            <div class="section-title-row"><h2>Nylige søk</h2><button class="link-button" id="clear-recent-searches" type="button">Tøm</button></div>
             <div class="recent-searches" id="recent-searches"></div>
           </section>
         </section>
@@ -141,69 +145,40 @@
             <input id="item-id" type="hidden" />
 
             <label class="photo-picker" id="photo-picker">
-              <input id="item-image" type="file" accept="image/*" />
-              <span class="photo-preview" id="photo-preview">
-                <svg><use href="#i-camera" /></svg>
-                <span>Legg til bilde</span>
-              </span>
+              <input id="item-image" type="file" accept="image/*" capture="environment" />
+              <span class="photo-preview" id="photo-preview"><svg><use href="#i-camera" /></svg><span>Legg til bilde</span></span>
             </label>
 
             <div class="form-section">
-              <label class="field">
-                <span>Navn på tingen</span>
-                <input id="item-name" type="text" maxlength="80" placeholder="F.eks. Pass" required />
-              </label>
+              <label class="field"><span>Navn på tingen</span><input id="item-name" type="text" maxlength="80" placeholder="F.eks. Pass" required /></label>
 
-              <label class="field field--select">
-                <span>Kategori</span>
-                <select id="item-category" required>
-                  <option value="Dokumenter">Dokumenter</option>
-                  <option value="Verktøy">Verktøy</option>
-                  <option value="Elektronikk">Elektronikk</option>
-                  <option value="Klær">Klær</option>
-                  <option value="Kjøkken">Kjøkken</option>
-                  <option value="Hund">Hund</option>
-                  <option value="Bil">Bil</option>
-                  <option value="Annet">Annet</option>
-                </select>
-                <svg><use href="#i-chevron" /></svg>
-              </label>
+              <div class="field-with-action">
+                <label class="field field--select">
+                  <span>Kategori</span>
+                  <select id="item-category" required></select>
+                  <svg><use href="#i-chevron" /></svg>
+                </label>
+                <button class="inline-action" type="button" data-open-manager="categories">Administrer</button>
+              </div>
 
-              <label class="field">
-                <span>Rom</span>
-                <input id="item-room" type="text" maxlength="50" list="room-options" placeholder="F.eks. Soverom" required />
-                <datalist id="room-options">
-                  <option value="Soverom"></option><option value="Bod"></option><option value="Kjøkken"></option>
-                  <option value="Stue"></option><option value="Kontor"></option><option value="Bad"></option>
-                  <option value="Entré"></option><option value="Kjellerbod"></option><option value="Bil"></option>
-                </datalist>
-              </label>
+              <div class="field-with-action">
+                <label class="field field--select">
+                  <span>Rom</span>
+                  <select id="item-room" required></select>
+                  <svg><use href="#i-chevron" /></svg>
+                </label>
+                <button class="inline-action" type="button" data-open-manager="rooms">Administrer</button>
+              </div>
 
-              <label class="field">
-                <span>Plassering</span>
-                <input id="item-location" type="text" maxlength="120" placeholder="F.eks. Kommode" required />
-              </label>
-
-              <label class="field">
-                <span>Nivå / detalj <small>valgfritt</small></span>
-                <input id="item-detail" type="text" maxlength="120" placeholder="F.eks. Øverste skuff" />
-              </label>
-
-              <label class="field">
-                <span>Notat <small>valgfritt</small></span>
-                <textarea id="item-notes" rows="4" maxlength="280" placeholder="Legg til et notat …"></textarea>
-              </label>
+              <label class="field"><span>Plassering</span><input id="item-location" type="text" maxlength="120" placeholder="F.eks. Kommode" required /></label>
+              <label class="field"><span>Nivå / detalj <small>valgfritt</small></span><input id="item-detail" type="text" maxlength="120" placeholder="F.eks. Øverste skuff" /></label>
+              <label class="field"><span>Notat <small>valgfritt</small></span><textarea id="item-notes" rows="4" maxlength="280" placeholder="Legg til et notat …"></textarea></label>
             </div>
 
             <label class="favorite-toggle">
-              <span>
-                <svg><use href="#i-star" /></svg>
-                Legg til som favoritt
-              </span>
-              <input id="item-favorite" type="checkbox" />
-              <span class="switch" aria-hidden="true"></span>
+              <span><svg><use href="#i-star" /></svg>Legg til som favoritt</span>
+              <input id="item-favorite" type="checkbox" /><span class="switch" aria-hidden="true"></span>
             </label>
-
             <button class="primary-button form-save-button" type="submit">Lagre ting</button>
           </form>
         </section>
@@ -211,147 +186,125 @@
         <section class="screen" data-screen="rooms" aria-labelledby="rooms-title">
           <header class="screen-header">
             <h1 id="rooms-title">Rom</h1>
-            <button class="round-button" type="button" data-open-add aria-label="Legg til ting">
-              <svg><use href="#i-plus" /></svg>
-            </button>
+            <button class="round-button" type="button" data-add-entity="room" aria-label="Legg til rom"><svg><use href="#i-plus" /></svg></button>
           </header>
           <div class="room-list" id="room-list"></div>
           <div class="empty-state" id="rooms-empty" hidden>
             <div class="empty-state__icon"><svg><use href="#i-rooms" /></svg></div>
-            <h3>Ingen rom ennå</h3>
-            <p>Rom dukker opp automatisk når du legger til ting.</p>
+            <h3>Ingen rom ennå</h3><p>Legg til et rom for å organisere tingene.</p>
           </div>
         </section>
 
         <section class="screen" data-screen="profile" aria-labelledby="profile-title">
-          <header class="screen-header">
-            <h1 id="profile-title">Profil</h1>
-          </header>
+          <header class="screen-header"><h1 id="profile-title">Profil</h1></header>
 
-          <section class="share-card">
-            <div>
-              <h2>Del med samboer ❤️</h2>
-              <p>Synkronisering mellom to telefoner kommer i en senere versjon.</p>
-              <button class="small-primary-button" id="share-partner" type="button">Les mer</button>
+          <section class="home-card">
+            <div class="home-card__top">
+              <div><span class="card-overline">AKTIVT HJEM</span><h2 id="profile-home-name">Mitt hjem</h2></div>
+              <button class="link-button" type="button" data-open-manager="home">Administrer</button>
             </div>
-            <div class="avatar-pair" aria-hidden="true">
-              <span>R</span><span>L</span>
-            </div>
+            <div class="home-members-preview" id="home-members-preview"></div>
+            <button class="small-primary-button" type="button" data-open-manager="home"><svg><use href="#i-users" /></svg> Inviter medlem</button>
           </section>
 
           <div class="settings-group">
-            <button class="settings-row" type="button" id="show-favorites">
-              <span class="settings-icon"><svg><use href="#i-star" /></svg></span>
-              <span>Favoritter</span>
-              <span class="settings-meta" id="favorite-count">0</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+            <button class="settings-row" type="button" data-open-manager="categories">
+              <span class="settings-icon settings-icon--purple"><svg><use href="#i-tag" /></svg></span><span>Kategorier</span><span class="settings-meta" id="category-count">0</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
-            <button class="settings-row" type="button" id="show-trash">
-              <span class="settings-icon"><svg><use href="#i-trash" /></svg></span>
-              <span>Nylig slettet</span>
-              <span class="settings-meta" id="trash-count">0</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+            <button class="settings-row" type="button" data-open-manager="rooms">
+              <span class="settings-icon settings-icon--blue"><svg><use href="#i-rooms" /></svg></span><span>Rom og steder</span><span class="settings-meta" id="room-count">0</span><svg class="chevron"><use href="#i-chevron" /></svg>
+            </button>
+            <button class="settings-row" type="button" data-open-manager="appearance">
+              <span class="settings-icon settings-icon--orange"><svg><use href="#i-palette" /></svg></span><span>Utseende</span><span class="settings-meta" id="theme-label">Lys</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
           </div>
 
           <div class="settings-group">
+            <button class="settings-row" type="button" id="show-favorites">
+              <span class="settings-icon"><svg><use href="#i-star" /></svg></span><span>Favoritter</span><span class="settings-meta" id="favorite-count">0</span><svg class="chevron"><use href="#i-chevron" /></svg>
+            </button>
+            <button class="settings-row" type="button" id="show-trash">
+              <span class="settings-icon"><svg><use href="#i-trash" /></svg></span><span>Nylig slettet</span><span class="settings-meta" id="trash-count">0</span><svg class="chevron"><use href="#i-chevron" /></svg>
+            </button>
+          </div>
+
+          <div class="settings-group">
+            <button class="settings-row" type="button" id="account-info">
+              <span class="settings-icon settings-icon--black"><svg><use href="#i-user" /></svg></span><span>Konto og synkronisering</span><span class="settings-meta">Neste fase</span><svg class="chevron"><use href="#i-chevron" /></svg>
+            </button>
             <button class="settings-row" type="button" id="install-app">
-              <span class="settings-icon"><svg><use href="#i-download" /></svg></span>
-              <span>Installer på iPhone</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+              <span class="settings-icon"><svg><use href="#i-download" /></svg></span><span>Installer på iPhone</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
             <button class="settings-row" type="button" id="export-data">
-              <span class="settings-icon"><svg><use href="#i-share" /></svg></span>
-              <span>Eksporter sikkerhetskopi</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+              <span class="settings-icon"><svg><use href="#i-share" /></svg></span><span>Eksporter sikkerhetskopi</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
             <label class="settings-row settings-row--file">
-              <span class="settings-icon"><svg><use href="#i-upload" /></svg></span>
-              <span>Importer sikkerhetskopi</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
-              <input id="import-data" type="file" accept="application/json" />
+              <span class="settings-icon"><svg><use href="#i-upload" /></svg></span><span>Importer sikkerhetskopi</span><svg class="chevron"><use href="#i-chevron" /></svg><input id="import-data" type="file" accept="application/json" />
             </label>
           </div>
 
           <div class="settings-group">
             <button class="settings-row" type="button" id="qr-info">
-              <span class="settings-icon"><svg><use href="#i-qr" /></svg></span>
-              <span>QR-koder</span>
-              <span class="settings-meta">Snart</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+              <span class="settings-icon"><svg><use href="#i-qr" /></svg></span><span>QR-koder</span><span class="settings-meta">Snart</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
             <button class="settings-row" type="button" id="help-button">
-              <span class="settings-icon"><svg><use href="#i-help" /></svg></span>
-              <span>Hjelp og tips</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+              <span class="settings-icon"><svg><use href="#i-help" /></svg></span><span>Hjelp og tips</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
             <button class="settings-row" type="button" id="about-button">
-              <span class="settings-icon"><svg><use href="#i-info" /></svg></span>
-              <span>Om appen</span>
-              <span class="settings-meta">v1.0</span>
-              <svg class="chevron"><use href="#i-chevron" /></svg>
+              <span class="settings-icon"><svg><use href="#i-info" /></svg></span><span>Om appen</span><span class="settings-meta">v1.1</span><svg class="chevron"><use href="#i-chevron" /></svg>
             </button>
           </div>
         </section>
       </main>
 
       <nav class="tab-bar" aria-label="Hovedmeny">
-        <button class="tab-button is-active" type="button" data-nav="home">
-          <svg><use href="#i-home" /></svg><span>Hjem</span>
-        </button>
-        <button class="tab-button" type="button" data-nav="search">
-          <svg><use href="#i-search" /></svg><span>Søk</span>
-        </button>
-        <button class="tab-button tab-button--add" type="button" data-nav="add" aria-label="Legg til">
-          <span class="add-orb"><svg><use href="#i-plus" /></svg></span><span>Legg til</span>
-        </button>
-        <button class="tab-button" type="button" data-nav="rooms">
-          <svg><use href="#i-rooms" /></svg><span>Rom</span>
-        </button>
-        <button class="tab-button" type="button" data-nav="profile">
-          <svg><use href="#i-user" /></svg><span>Profil</span>
-        </button>
+        <button class="tab-button is-active" type="button" data-nav="home"><svg><use href="#i-home" /></svg><span>Hjem</span></button>
+        <button class="tab-button" type="button" data-nav="search"><svg><use href="#i-search" /></svg><span>Søk</span></button>
+        <button class="tab-button tab-button--add" type="button" data-nav="add" aria-label="Legg til"><span class="add-orb"><svg><use href="#i-plus" /></svg></span><span>Legg til</span></button>
+        <button class="tab-button" type="button" data-nav="rooms"><svg><use href="#i-rooms" /></svg><span>Rom</span></button>
+        <button class="tab-button" type="button" data-nav="profile"><svg><use href="#i-user" /></svg><span>Profil</span></button>
       </nav>
     </div>
 
     <dialog class="sheet" id="detail-sheet">
       <div class="sheet-content detail-content">
-        <div class="sheet-topbar">
-          <button class="icon-text-button" type="button" data-close-detail>
-            <svg><use href="#i-arrow-left" /></svg><span>Tilbake</span>
-          </button>
-          <button class="round-icon-button" id="detail-more" type="button" aria-label="Del">•••</button>
-        </div>
+        <div class="sheet-topbar"><button class="icon-text-button" type="button" data-close-detail><svg><use href="#i-arrow-left" /></svg><span>Tilbake</span></button><button class="round-icon-button" id="detail-more" type="button" aria-label="Flere valg">•••</button></div>
         <div id="detail-body"></div>
       </div>
     </dialog>
 
     <dialog class="sheet sheet--compact" id="list-sheet">
       <div class="sheet-content">
-        <div class="sheet-topbar">
-          <button class="icon-text-button" type="button" data-close-list>
-            <svg><use href="#i-arrow-left" /></svg><span>Tilbake</span>
-          </button>
-          <h2 id="list-sheet-title">Liste</h2>
-          <span class="topbar-spacer"></span>
-        </div>
+        <div class="sheet-topbar"><button class="icon-text-button" type="button" data-close-list><svg><use href="#i-arrow-left" /></svg><span>Tilbake</span></button><h2 id="list-sheet-title">Liste</h2><span class="topbar-spacer"></span></div>
         <div class="compact-list" id="list-sheet-content"></div>
       </div>
     </dialog>
 
+    <dialog class="sheet sheet--compact" id="settings-sheet">
+      <div class="sheet-content">
+        <div class="sheet-topbar"><button class="icon-text-button" type="button" data-close-settings><svg><use href="#i-arrow-left" /></svg><span>Tilbake</span></button><h2 id="settings-sheet-title">Innstillinger</h2><span class="topbar-spacer"></span></div>
+        <div id="settings-sheet-content"></div>
+      </div>
+    </dialog>
+
+    <dialog class="entity-dialog" id="entity-dialog">
+      <form id="entity-form" class="entity-form">
+        <div class="entity-dialog__header"><div><span class="card-overline" id="entity-overline">NY</span><h2 id="entity-title">Legg til</h2></div><button class="round-icon-button" type="button" data-close-entity aria-label="Lukk"><svg><use href="#i-close" /></svg></button></div>
+        <input id="entity-type" type="hidden" /><input id="entity-id" type="hidden" />
+        <label class="field"><span>Navn</span><input id="entity-name" type="text" maxlength="50" required /></label>
+        <label class="field"><span>Ikon</span><input id="entity-icon" type="text" maxlength="4" placeholder="📦" required /></label>
+        <label class="field" id="entity-color-field"><span>Farge</span><input id="entity-color" type="color" value="#8b5cf6" /></label>
+        <div class="entity-dialog__actions"><button class="danger-link" id="entity-delete" type="button" hidden>Slett</button><span></span><button class="secondary-small-button" type="button" data-close-entity>Avbryt</button><button class="primary-small-button" type="submit">Lagre</button></div>
+      </form>
+    </dialog>
+
     <dialog class="alert-dialog" id="alert-dialog">
       <div class="alert-content">
-        <div class="alert-icon" id="alert-icon"><svg><use href="#i-info" /></svg></div>
-        <h2 id="alert-title">Informasjon</h2>
-        <div id="alert-copy"></div>
-        <div class="alert-actions" id="alert-actions">
-          <button class="primary-button" type="button" data-close-alert>Skjønner</button>
-        </div>
+        <div class="alert-icon" id="alert-icon"><svg><use href="#i-info" /></svg></div><h2 id="alert-title">Informasjon</h2><div id="alert-copy"></div><div class="alert-actions" id="alert-actions"><button class="primary-button" type="button" data-close-alert>Skjønner</button></div>
       </div>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-
-    <script src="./app.js?v=3" defer></script>
+    <script src="./app.js?v=4" defer></script>
   </body>
 </html>

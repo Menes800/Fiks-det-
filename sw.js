@@ -1,8 +1,12 @@
-const CACHE = 'hvor-er-den-v3';
-const ASSETS = ['./', './index.html', './styles.css?v=3', './app.js?v=3', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'hvor-er-den-v4';
+const ASSETS = ['./', './index.html', './styles.css?v=4', './app.js?v=4', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (event) => {
