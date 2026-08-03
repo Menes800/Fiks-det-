@@ -1,13 +1,13 @@
-const CACHE = 'hvor-er-den-v9';
+const CACHE = 'hvor-er-den-v10';
 const V21_PARTS = Array.from(
-  { length: 9 },
-  (_, index) => `./cloud-v21-packed/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
+  { length: 10 },
+  (_, index) => `./cloud-v21/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
 );
 const ASSETS = [
   './', './index.html', './styles.css?v=4', './v1.css?v=1', './cloud.css?v=1', './v21.css?v=1',
   './app-model.js?v=1', './app-core.js?v=1', './app-render.js?v=1',
   './app-items.js?v=1', './app-managers.js?v=1', './app-events.js?v=2',
-  './supabase-config.js?v=1', './cloud-loader.js?v=4',
+  './supabase-config.js?v=1', './cloud-loader.js?v=5',
   ...V21_PARTS,
   './ui-1.js?v=1', './ui-2.js?v=1', './ui-3.js?v=1', './ui-4.js?v=1', './ui-mount.js?v=1',
   './manifest.webmanifest', './icon.svg',
