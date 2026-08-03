@@ -3,141 +3,191 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d110f" />
+    <meta name="theme-color" content="#f7f3ec" />
     <meta
       name="description"
-      content="Fiks det! – en liten drifts- og problemløsningssimulator."
+      content="Hvor er den? – en enkel app som husker hvor tingene dine ligger."
     />
-    <title>Fiks det!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+    <title>Hvor er den?</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
+    <div class="page-shell">
       <header class="topbar">
-        <a class="brand" href="#top" aria-label="Fiks det – forsiden">
-          <span class="brand-mark">F</span>
-          <span>FIKS DET!</span>
+        <a class="brand" href="#top" aria-label="Hvor er den? – forsiden">
+          <span class="brand-mark" aria-hidden="true">⌖</span>
+          <span>Hvor er den?</span>
         </a>
-        <button class="ghost-button" id="reset-game" type="button">Nullstill</button>
+        <button class="button button--dark" id="open-create" type="button">
+          <span aria-hidden="true">＋</span> Legg til ting
+        </button>
       </header>
 
       <main id="top">
-        <section class="hero">
-          <div>
-            <p class="eyebrow">DRIFTSSIMULATOR</p>
-            <h1>Hvor god er du når noe faktisk går galt?</h1>
-            <p class="hero-copy">
-              Prioriter riktig, velg leverandør og skriv en arbeidsordre som faktisk kan brukes.
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">SLUTT Å LETE</p>
+            <h1 id="hero-title">Finn tingene dine på sekunder.</h1>
+            <p>
+              Registrer hvor ting ligger én gang. Søk neste gang du trenger dem.
             </p>
           </div>
 
-          <div class="score-card" aria-label="Spillstatus">
-            <div class="score-card__top">
-              <div>
-                <span class="label">Nivå</span>
-                <strong id="level-name">Vaktmester</strong>
-              </div>
-              <div class="score-number"><span id="score">0</span> poeng</div>
-            </div>
-            <div class="progress-track" aria-hidden="true">
-              <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <div class="score-meta">
-              <span><span id="completed">0</span> saker løst</span>
-              <span><span id="streak">0</span> på rad</span>
-              <span id="next-level">300 til neste nivå</span>
-            </div>
+          <div class="search-panel">
+            <label class="search-box" for="search-input">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input
+                id="search-input"
+                type="search"
+                autocomplete="off"
+                placeholder="Søk etter pass, drill, julelys …"
+              />
+              <kbd>Ctrl K</kbd>
+            </label>
+            <div class="quick-filters" id="quick-filters" aria-label="Filtrer etter rom"></div>
           </div>
         </section>
 
-        <section class="case-layout">
-          <article class="case-card">
-            <div class="case-card__header">
-              <span class="case-number" id="case-number">SAK 1</span>
-              <span class="category-pill" id="case-category">Heis</span>
-            </div>
-            <h2 id="case-title"></h2>
-            <p id="case-description"></p>
-            <div class="case-alert">
-              <span>!</span>
-              Du står ansvarlig for første vurdering og videre bestilling.
-            </div>
+        <section class="overview" aria-label="Oversikt">
+          <article class="stat-card">
+            <span class="stat-label">Registrert</span>
+            <strong id="item-count">0</strong>
+            <span>ting</span>
           </article>
+          <article class="stat-card">
+            <span class="stat-label">Fordelt på</span>
+            <strong id="room-count">0</strong>
+            <span>steder</span>
+          </article>
+          <article class="tip-card">
+            <span aria-hidden="true">💡</span>
+            <p><strong>Tips:</strong> Skriv presist, for eksempel «øverste skuff til venstre».</p>
+          </article>
+        </section>
 
-          <form class="decision-card" id="decision-form">
-            <fieldset>
-              <legend>1. Hvor alvorlig er saken?</legend>
-              <div class="option-grid option-grid--severity" id="severity-options"></div>
-            </fieldset>
+        <section class="content-section" aria-labelledby="list-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" id="result-label">ALLE TING</p>
+              <h2 id="list-title">Dette har du lagret</h2>
+            </div>
+            <label class="sort-control">
+              <span>Sorter</span>
+              <select id="sort-select">
+                <option value="updated">Sist endret</option>
+                <option value="name">Navn A–Å</option>
+                <option value="room">Rom A–Å</option>
+              </select>
+            </label>
+          </div>
 
-            <fieldset>
-              <legend>2. Hva gjør du først?</legend>
-              <div class="option-list" id="action-options"></div>
-            </fieldset>
+          <div class="item-grid" id="item-grid"></div>
 
-            <fieldset>
-              <legend>3. Hvem bestiller du?</legend>
-              <div class="option-grid" id="supplier-options"></div>
-            </fieldset>
-
-            <fieldset>
-              <legend>4. Skriv arbeidsordren</legend>
-              <textarea
-                id="order-text"
-                placeholder="Kort, konkret og tydelig …"
-                maxlength="240"
-                rows="4"
-                required
-              ></textarea>
-              <div class="textarea-meta">
-                <span>Adresse ligger allerede på arbeidsordren.</span>
-                <span><span id="order-count">0</span>/240</span>
-              </div>
-            </fieldset>
-
-            <button class="primary-button" id="submit-button" type="submit" disabled>
-              Send løsning
-            </button>
-
-            <section class="result-panel" id="result-panel" aria-live="polite" hidden>
-              <div class="result-heading">
-                <div>
-                  <span class="label">Resultat</span>
-                  <h3 id="result-verdict"></h3>
-                </div>
-                <strong id="round-score">+0</strong>
-              </div>
-
-              <div class="breakdown">
-                <span id="severity-points"></span>
-                <span id="action-points"></span>
-                <span id="supplier-points"></span>
-                <span id="order-points"></span>
-              </div>
-
-              <p class="bonus" id="bonus-text" hidden></p>
-
-              <div class="ideal-answer">
-                <span class="label">Forslag til arbeidsordre</span>
-                <p id="ideal-order"></p>
-              </div>
-
-              <button class="primary-button" id="next-case" type="button">Neste sak</button>
-            </section>
-          </form>
+          <div class="empty-state" id="empty-state" hidden>
+            <span class="empty-icon" aria-hidden="true">⌕</span>
+            <h3 id="empty-title">Ingen treff</h3>
+            <p id="empty-copy">Prøv et annet søk, eller legg til tingen du leter etter.</p>
+            <button class="button button--dark" id="empty-create" type="button">Legg til ting</button>
+          </div>
         </section>
       </main>
 
       <footer>
-        Laget for folk som vet at «kan du bare se på det?» aldri er bare å se på det.
+        <p>Alt lagres lokalt i denne nettleseren.</p>
+        <div class="footer-actions">
+          <button class="text-button" id="export-data" type="button">Eksporter sikkerhetskopi</button>
+          <label class="text-button text-button--file">
+            Importer
+            <input id="import-data" type="file" accept="application/json" />
+          </label>
+        </div>
       </footer>
     </div>
+
+    <dialog class="item-dialog" id="item-dialog">
+      <form method="dialog" id="item-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow" id="dialog-eyebrow">NY TING</p>
+            <h2 id="dialog-title">Hvor ligger den?</h2>
+          </div>
+          <button class="icon-button" id="close-dialog" type="button" aria-label="Lukk">×</button>
+        </div>
+
+        <input id="item-id" type="hidden" />
+
+        <div class="form-grid">
+          <label class="field field--wide">
+            <span>Hva er det?</span>
+            <input id="item-name" type="text" maxlength="80" placeholder="For eksempel pass" required />
+          </label>
+
+          <label class="field">
+            <span>Kategori</span>
+            <select id="item-category" required>
+              <option value="Dokumenter">Dokumenter</option>
+              <option value="Verktøy">Verktøy</option>
+              <option value="Elektronikk">Elektronikk</option>
+              <option value="Klær">Klær</option>
+              <option value="Kjøkken">Kjøkken</option>
+              <option value="Hund">Hund</option>
+              <option value="Bil">Bil</option>
+              <option value="Annet">Annet</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Rom eller område</span>
+            <input id="item-room" type="text" list="room-suggestions" maxlength="50" placeholder="For eksempel bod" required />
+            <datalist id="room-suggestions">
+              <option value="Entré"></option>
+              <option value="Stue"></option>
+              <option value="Kjøkken"></option>
+              <option value="Soverom"></option>
+              <option value="Bad"></option>
+              <option value="Bod"></option>
+              <option value="Kjellerbod"></option>
+              <option value="Bil"></option>
+            </datalist>
+          </label>
+
+          <label class="field field--wide">
+            <span>Nøyaktig plassering</span>
+            <input
+              id="item-location"
+              type="text"
+              maxlength="120"
+              placeholder="Blå dokumentmappe, øverste skuff"
+              required
+            />
+          </label>
+
+          <label class="field field--wide">
+            <span>Notat <small>valgfritt</small></span>
+            <textarea id="item-notes" rows="3" maxlength="240" placeholder="Farge, størrelse eller annet som gjør den lettere å finne"></textarea>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="button button--light" id="cancel-dialog" type="button">Avbryt</button>
+          <button class="button button--dark" type="submit">Lagre</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="confirm-dialog" id="confirm-dialog">
+      <div class="confirm-content">
+        <span class="confirm-icon" aria-hidden="true">!</span>
+        <h2>Slette denne tingen?</h2>
+        <p id="confirm-copy">Den fjernes permanent fra denne nettleseren.</p>
+        <div class="dialog-actions">
+          <button class="button button--light" id="cancel-delete" type="button">Behold</button>
+          <button class="button button--danger" id="confirm-delete" type="button">Slett</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
     <script src="app.js" defer></script>
   </body>
