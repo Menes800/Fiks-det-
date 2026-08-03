@@ -29,10 +29,9 @@ if (!index.includes('v21.css?v=1') || !index.includes('cloud-loader.js?v=3')) {
 if (serviceWorker.includes('cloud.js.gz') || !serviceWorker.includes("hvor-er-den-v8")) {
   throw new Error('Service worker bruker feil appkjerne eller cacheversjon');
 }
-for (const path of partPaths) {
-  const webPath = `./${path}?v=1`;
-  if (!loader.includes(webPath) || !serviceWorker.includes(webPath)) {
-    throw new Error(`${webPath} mangler i loader eller service worker`);
+for (const file of [loader, serviceWorker]) {
+  if (!file.includes('{ length: 10 }') || !file.includes("./cloud-v21/part-") || !file.includes(".b64?v=1")) {
+    throw new Error('Loader eller service worker mangler oppsett for alle ti appdeler');
   }
 }
 
