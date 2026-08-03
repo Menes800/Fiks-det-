@@ -31,6 +31,8 @@ Den stabile sky- og synkroniseringskjernen fra 2.0 beholdes. 2.1-funksjonene lig
 
 Supabase-prosjektet inneholder tabeller for profiler, hjem, medlemmer, invitasjoner, kategorier, rom, beholdere, ting, favoritter, bilder og aktivitet. Alle tabeller som brukes av appen har Row Level Security.
 
+Før publisering kontrollerer GitHub automatisk syntaksen i alle 2.1-modulene og den komprimerte sky-kjernen, samt at HTML og offline-cache peker på riktige filer.
+
 ## Innlogging
 
 E-postinnlogging er aktiv. Supabase må ha denne adressen som Site URL og tillatt Redirect URL:
