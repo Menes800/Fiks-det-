@@ -32,7 +32,20 @@ if (!source.includes("const VERSION = '2.1.0'")) {
 if (source.includes("const SHARE_CLASS = 'hed-share-invite'") || source.includes('new MutationObserver(queueScan)')) {
   throw new Error('Den defekte invitasjonsloopen finnes fortsatt i appkjernen');
 }
-new vm.Script(source, { filename: 'cloud-v21.js' });
+try {
+  new vm.Script(source, { filename: 'cloud-v21.js' });
+} catch (error) {
+  const match = String(error.stack || error).match(/cloud-v21\.js:(\d+)/);
+  const lineNumber = Number(match?.[1] || 1);
+  const lines = source.split('\n');
+  const from = Math.max(0, lineNumber - 8);
+  const to = Math.min(lines.length, lineNumber + 7);
+  console.error('\nKilde rundt syntaksfeilen:');
+  for (let index = from; index < to; index += 1) {
+    console.error(`${String(index + 1).padStart(4, ' ')} | ${lines[index]}`);
+  }
+  throw error;
+}
 
 const index = readFileSync('index.html', 'utf8');
 const serviceWorker = readFileSync('sw.js', 'utf8');
