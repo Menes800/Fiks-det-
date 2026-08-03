@@ -1,7 +1,7 @@
 {
   "name": "Hvor er den?",
   "short_name": "Hvor er den?",
-  "description": "Finn tingene i hjemmet uten å lete.",
+  "description": "Finn ting, kasser, skap og skuffer i hjemmet uten å lete.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -11,10 +11,6 @@
   "lang": "nb-NO",
   "categories": ["productivity", "utilities"],
   "icons": [
-    {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    }
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

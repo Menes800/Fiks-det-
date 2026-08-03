@@ -1,29 +1,28 @@
-# Hvor er den?
+# Hvor er den? 1.0
 
-En iPhone-first produktprototype for par, familier og kollektiv som vil huske hvor tingene i hjemmet ligger.
+En iPhone-first produktprototype for par, familier og kollektiv som vil finne ting i hjemmet uten å lete.
 
 ## Dette fungerer
 
-- lys visning som standard
-- mørk visning eller «Følg iPhone»
-- egne kategorier med navn, ikon og farge
-- egne rom og steder med navn og ikon
-- trygg sletting som flytter ting til «Annet» eller «Annet sted»
-- lokalt hjem med medlemmer og prototypeinvitasjoner
-- søk på navn, kategori, rom, plassering, detalj og notat
+- lys, mørk eller systemstyrt visning
+- egne kategorier og rom
+- skap, skuffer, hyller, mapper, bager og kasser
+- automatisk kode og QR-etikett for hver plassering
+- full plasseringssti: rom → beholder → detalj
+- flytting og endringshistorikk
+- aktivitet for hjemmet og historikk per ting
+- tagger, favoritter og private ting
+- smarte filtre for nylig flyttet, uten bilde og privat
 - bilde fra kamera eller bildebibliotek
-- favoritter, redigering, deling og nylig slettet
-- eksport og import av sikkerhetskopi
-- offline-støtte og installasjon på hjemskjermen
+- eksport, import, offline-støtte og installasjon på hjemskjermen
+- lokal prototype for hjem, medlemmer og invitasjoner
+
+## QR-koder
+
+QR-koden åpner appen med riktig beholderkode. Selve QR-bildet genereres av en ekstern tjeneste i prototypen og krever nett. Ingen navn på ting sendes; bare app-lenken og den tilfeldige beholderkoden.
 
 ## Neste tekniske fase
 
-Produksjonsversjonen trenger:
+Produksjonsversjonen trenger Logg inn med Apple, skylagring, sanntidssynkronisering, ekte invitasjonslenker, tilgangsroller, private data per bruker og flere hjem.
 
-- Logg inn med Apple
-- skylagring og sanntidssynkronisering
-- invitasjonslenker til hjem
-- tilgangsroller og private ting
-- flere hjem per bruker
-
-Prototypen lagrer fortsatt data lokalt i nettleseren.
+Prototypen lagrer fortsatt innholdet lokalt i nettleseren.
