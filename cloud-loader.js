@@ -3,8 +3,22 @@
     { length: 10 },
     (_, index) => `./cloud-v21/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
   );
-  const brokenSource = 'email: cleanEmail(form.email.value)),';
-  const fixedSource = 'email: cleanEmail(form.email.value),';
+  const repairs = [
+    ['email: cleanEmail(form.email.value)),', 'email: cleanEmail(form.email.value),'],
+    ["toLocaleDateString('v'b-NO')", "toLocaleDateString('nb-NO')"],
+  ];
+
+  function repairSource(input) {
+    let source = input;
+    for (const [broken, fixed] of repairs) {
+      const occurrences = source.split(broken).length - 1;
+      if (occurrences !== 1) {
+        throw new Error(`Uventet antall forekomster av kjent kildefeil: ${occurrences}`);
+      }
+      source = source.replace(broken, fixed);
+    }
+    return source;
+  }
 
   async function bootCloud() {
     try {
@@ -17,13 +31,7 @@
       const chunks = await Promise.all(responses.map((response) => response.text()));
       const binary = atob(chunks.join('').replace(/\s+/g, ''));
       const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-      let source = new TextDecoder().decode(bytes);
-
-      const occurrences = source.split(brokenSource).length - 1;
-      if (occurrences !== 1) {
-        throw new Error(`Uventet antall kjente syntaksfeil: ${occurrences}`);
-      }
-      source = source.replace(brokenSource, fixedSource);
+      const source = repairSource(new TextDecoder().decode(bytes));
 
       if (!source.includes("const VERSION = '2.1.0'")) {
         throw new Error('Feil versjon av appkjernen');
