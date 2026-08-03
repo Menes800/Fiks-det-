@@ -2,62 +2,64 @@ import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import vm from 'node:vm';
 
-const partPaths = Array.from(
-  { length: 9 },
-  (_, index) => `cloud-v21-packed/part-${String(index + 1).padStart(2, '0')}.b64`,
-);
-const compressed = Buffer.concat(
-  partPaths.map((path) => Buffer.from(readFileSync(path, 'utf8').trim(), 'base64')),
-);
-const source = gunzipSync(compressed).toString('utf8');
-
-if (!source.startsWith('(() => {')) {
-  throw new Error('2.1-kjernen kunne ikke rekonstrueres fra gzip-delene');
-}
-if (!source.includes("const VERSION = '2.1.0'")) {
-  throw new Error('Feil eller manglende versjon i 2.1-kjernen');
-}
-if (source.includes("const SHARE_CLASS = 'hed-share-invite'") || source.includes('new MutationObserver(queueScan)')) {
-  throw new Error('Den defekte invitasjonsloopen finnes fortsatt i appkjernen');
-}
-try {
-  new vm.Script(source, { filename: 'cloud-v21.js' });
-} catch (error) {
-  const match = String(error.stack || error).match(/cloud-v21\.js:(\d+)/);
-  const lineNumber = Number(match?.[1] || 1);
-  const lines = source.split('\n');
-  const from = Math.max(0, lineNumber - 8);
-  const to = Math.min(lines.length, lineNumber + 7);
-  console.error('\nKilde rundt syntaksfeilen:');
-  for (let index = from; index < to; index += 1) {
-    console.error(`${String(index + 1).padStart(4, ' ')} | ${lines[index]}`);
+const scripts = [
+  'v21/v21-client.js',
+  'v21/v21-account.js',
+  'v21/v21-invite.js',
+  'v21/v21-qr.js',
+  'v21/v21-polish.js',
+];
+for (const path of scripts) {
+  const source = readFileSync(path, 'utf8');
+  new vm.Script(source, { filename: path });
+  if (!source.includes('window.HED21') && path.endsWith('v21-client.js')) {
+    throw new Error('2.1-klienten oppretter ikke HED21-navnerommet');
   }
-  throw error;
 }
+
+const cloudSource = gunzipSync(readFileSync('cloud.js.gz')).toString('utf8');
+new vm.Script(cloudSource, { filename: 'cloud.js' });
 
 const index = readFileSync('index.html', 'utf8');
 const serviceWorker = readFileSync('sw.js', 'utf8');
 const loader = readFileSync('cloud-loader.js', 'utf8');
+const css = readFileSync('v21/v21-modular.css', 'utf8');
 
 if (index.includes('invite-share.js') || serviceWorker.includes('invite-share.js')) {
   throw new Error('Den defekte invitasjonskoden er fortsatt referert');
 }
-if (!index.includes('v21.css?v=1') || !index.includes('cloud-loader.js?v=6')) {
-  throw new Error('2.1-filene er ikke aktivert i index.html');
+if (index.includes('cloud-v21/') || index.includes('cloud-v21-packed/')) {
+  throw new Error('En ødelagt 2.1-pakke er fortsatt aktivert');
 }
-if (!serviceWorker.includes("hvor-er-den-v11")) {
+if (!loader.includes("fetch('./cloud.js.gz?v=1')")) {
+  throw new Error('Den stabile sky-kjernen er ikke aktivert');
+}
+if (!index.includes('cloud-loader.js?v=3') || !serviceWorker.includes('cloud-loader.js?v=3')) {
+  throw new Error('Feil versjon av sky-loaderen');
+}
+if (!serviceWorker.includes("hvor-er-den-v12")) {
   throw new Error('Service worker bruker feil cacheversjon');
 }
-for (const file of [loader, serviceWorker]) {
-  if (!file.includes('{ length: 9 }') || !file.includes('./cloud-v21-packed/part-') || !file.includes('.b64?v=1')) {
-    throw new Error('Loader eller service worker mangler den komplette gzip-pakken');
+if (!css.includes('.v21-dialog') || !css.includes('.v21-sync-pill')) {
+  throw new Error('2.1-stilarket er ufullstendig');
+}
+for (const path of scripts) {
+  const webPath = `./${path}?v=1`;
+  if (!index.includes(webPath) || !serviceWorker.includes(webPath)) {
+    throw new Error(`${webPath} mangler i index eller service worker`);
   }
 }
-if (!loader.includes('encodedParts.map(decodePart)') || !loader.includes('joinBytes')) {
-  throw new Error('Loaderen dekoder ikke gzip-delene separat');
+if (!index.includes('./v21/v21-modular.css?v=1') || !serviceWorker.includes('./v21/v21-modular.css?v=1')) {
+  throw new Error('2.1-stilarket er ikke aktivert');
 }
-if (!loader.includes("new DecompressionStream('gzip')")) {
-  throw new Error('Loaderen pakker ikke ut gzip-kjernen');
+if (!readFileSync('v21/v21-account.js', 'utf8').includes("rpc('create_invitation'")) {
+  throw new Error('Invitasjonsoppretting mangler');
+}
+if (!readFileSync('v21/v21-invite.js', 'utf8').includes("rpc('accept_invitation'")) {
+  throw new Error('Mottak av invitasjon mangler');
+}
+if (!readFileSync('v21/v21-qr.js', 'utf8').includes('BarcodeDetector')) {
+  throw new Error('QR-skanneren mangler');
 }
 
-console.log(`Hvor er den? 2.1 validert: ${source.length} tegn, ${partPaths.length} gzip-deler.`);
+console.log(`Hvor er den? 2.1 validert: ${scripts.length} moduler og stabil sky-kjerne.`);
