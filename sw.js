@@ -1,16 +1,22 @@
-const CACHE = 'hvor-er-den-v7';
+const CACHE = 'hvor-er-den-v12';
 const ASSETS = [
   './', './index.html', './styles.css?v=4', './v1.css?v=1', './cloud.css?v=1',
+  './v21/v21-modular.css?v=1',
   './app-model.js?v=1', './app-core.js?v=1', './app-render.js?v=1',
   './app-items.js?v=1', './app-managers.js?v=1', './app-events.js?v=2',
-  './supabase-config.js?v=1', './cloud-loader.js?v=2', './cloud.js.gz?v=1',
-  './invite-share.js?v=1',
+  './supabase-config.js?v=1', './cloud-loader.js?v=3', './cloud.js.gz?v=1',
+  './v21/v21-client.js?v=1', './v21/v21-account.js?v=1', './v21/v21-invite.js?v=1',
+  './v21/v21-qr.js?v=1', './v21/v21-polish.js?v=1',
   './ui-1.js?v=1', './ui-2.js?v=1', './ui-3.js?v=1', './ui-4.js?v=1', './ui-mount.js?v=1',
   './manifest.webmanifest', './icon.svg',
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -28,6 +34,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
+        if (!response.ok) return response;
         const copy = response.clone();
         caches.open(CACHE).then((cache) => cache.put(event.request, copy));
         return response;
