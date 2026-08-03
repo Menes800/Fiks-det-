@@ -1,35 +1,41 @@
-# Hvor er den? 2.0
+# Hvor er den? 2.1
 
 En iPhone-first hjemmeapp for par, familier og kollektiv som vil finne ting uten å lete.
 
 ## Dette fungerer
 
 - konto med e-post og passord
+- glemt passord, endre passord og slette konto
 - sikker skylagring i Supabase
 - opprette og bytte mellom flere hjem
-- invitere medlemmer med lenke
+- invitasjonslenker med iPhone-delingsmenyen
+- status for aktive, brukte, utløpte og tilbakekalte invitasjoner
 - roller for eier, medlem og lesetilgang
+- endre rolle, fjerne medlem og overføre eierskap
 - synkronisering i sanntid mellom telefoner
-- private ting som bare eieren kan se
+- synkstatus og kø for endringer uten nett
+- private ting og private bilder
 - egne kategorier, rom, skap, skuffer, mapper, bager og kasser
 - full plasseringssti: rom → beholder → detalj
 - automatisk kode og QR-etikett for hver plassering
+- QR-skanning med kamera, bilde eller manuell kode
 - flytting, endringshistorikk, tagger og favoritter
-- bilder i privat skylagring
-- lokal lagring og offline bruk når nettet er borte
-- import av eksisterende data fra telefonen
+- import av eksisterende lokale ting uten å lage åpenbare duplikater
 - eksport og import av sikkerhetskopi
+- kort startveiledning
 - installasjon på iPhone-hjemskjermen
 
-## Backend
+## Backend og sikkerhet
 
-Supabase-prosjektet inneholder tabeller for profiler, hjem, medlemmer, invitasjoner, kategorier, rom, beholdere, ting, favoritter, bilder og aktivitet.
+Supabase-prosjektet inneholder profiler, hjem, medlemmer, invitasjoner, kategorier, rom, beholdere, ting, favoritter, bilder og aktivitet.
 
-Alle tabeller som brukes av appen har Row Level Security. Brukeren får bare tilgang til hjem vedkommende er medlem av. Private ting og bildene deres er bare tilgjengelige for eieren.
+Alle eksponerte datatabeller bruker Row Level Security. Brukeren får bare tilgang til hjem vedkommende er medlem av. Private ting og tilhørende bilder er bare tilgjengelige for eieren. Administrative handlinger som medlemsroller, eierskap, invitasjoner og sletting kontrolleres på serveren.
 
-## Innlogging
+## Invitasjoner
 
-E-postinnlogging er aktiv i første skyversjon. Logg inn med Apple kommer senere, fordi det krever Apple Developer-oppsett og egne OAuth-nøkler.
+Eieren oppretter én invitasjonslenke og velger medlem eller lesetilgang. Lenken kan deles gjennom systemets delingsmeny. En invitasjon kan brukes én gang og kan tilbakekalles før den brukes.
+
+## Supabase Auth
 
 Supabase må ha denne adressen som Site URL og tillatt Redirect URL:
 
@@ -46,3 +52,5 @@ Appen publiseres automatisk fra `main` og kan åpnes på:
 ```text
 https://menes800.github.io/Fiks-det-/
 ```
+
+Ved større oppdateringer bør appen på hjemskjermen lukkes helt og åpnes på nytt, slik at ny service worker og cache aktiveres.
