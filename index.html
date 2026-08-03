@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d110f" />
+    <meta
+      name="description"
+      content="Fiks det! – en liten drifts- og problemløsningssimulator."
+    />
+    <title>Fiks det!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Fiks det – forsiden">
+          <span class="brand-mark">F</span>
+          <span>FIKS DET!</span>
+        </a>
+        <button class="ghost-button" id="reset-game" type="button">Nullstill</button>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div>
+            <p class="eyebrow">DRIFTSSIMULATOR</p>
+            <h1>Hvor god er du når noe faktisk går galt?</h1>
+            <p class="hero-copy">
+              Prioriter riktig, velg leverandør og skriv en arbeidsordre som faktisk kan brukes.
+            </p>
+          </div>
+
+          <div class="score-card" aria-label="Spillstatus">
+            <div class="score-card__top">
+              <div>
+                <span class="label">Nivå</span>
+                <strong id="level-name">Vaktmester</strong>
+              </div>
+              <div class="score-number"><span id="score">0</span> poeng</div>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="score-meta">
+              <span><span id="completed">0</span> saker løst</span>
+              <span><span id="streak">0</span> på rad</span>
+              <span id="next-level">300 til neste nivå</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="case-layout">
+          <article class="case-card">
+            <div class="case-card__header">
+              <span class="case-number" id="case-number">SAK 1</span>
+              <span class="category-pill" id="case-category">Heis</span>
+            </div>
+            <h2 id="case-title"></h2>
+            <p id="case-description"></p>
+            <div class="case-alert">
+              <span>!</span>
+              Du står ansvarlig for første vurdering og videre bestilling.
+            </div>
+          </article>
+
+          <form class="decision-card" id="decision-form">
+            <fieldset>
+              <legend>1. Hvor alvorlig er saken?</legend>
+              <div class="option-grid option-grid--severity" id="severity-options"></div>
+            </fieldset>
+
+            <fieldset>
+              <legend>2. Hva gjør du først?</legend>
+              <div class="option-list" id="action-options"></div>
+            </fieldset>
+
+            <fieldset>
+              <legend>3. Hvem bestiller du?</legend>
+              <div class="option-grid" id="supplier-options"></div>
+            </fieldset>
+
+            <fieldset>
+              <legend>4. Skriv arbeidsordren</legend>
+              <textarea
+                id="order-text"
+                placeholder="Kort, konkret og tydelig …"
+                maxlength="240"
+                rows="4"
+                required
+              ></textarea>
+              <div class="textarea-meta">
+                <span>Adresse ligger allerede på arbeidsordren.</span>
+                <span><span id="order-count">0</span>/240</span>
+              </div>
+            </fieldset>
+
+            <button class="primary-button" id="submit-button" type="submit" disabled>
+              Send løsning
+            </button>
+
+            <section class="result-panel" id="result-panel" aria-live="polite" hidden>
+              <div class="result-heading">
+                <div>
+                  <span class="label">Resultat</span>
+                  <h3 id="result-verdict"></h3>
+                </div>
+                <strong id="round-score">+0</strong>
+              </div>
+
+              <div class="breakdown">
+                <span id="severity-points"></span>
+                <span id="action-points"></span>
+                <span id="supplier-points"></span>
+                <span id="order-points"></span>
+              </div>
+
+              <p class="bonus" id="bonus-text" hidden></p>
+
+              <div class="ideal-answer">
+                <span class="label">Forslag til arbeidsordre</span>
+                <p id="ideal-order"></p>
+              </div>
+
+              <button class="primary-button" id="next-case" type="button">Neste sak</button>
+            </section>
+          </form>
+        </section>
+      </main>
+
+      <footer>
+        Laget for folk som vet at «kan du bare se på det?» aldri er bare å se på det.
+      </footer>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
