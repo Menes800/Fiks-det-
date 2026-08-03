@@ -22,6 +22,22 @@
     return source;
   }
 
+  function decodePart(base64) {
+    const binary = atob(base64.replace(/\s+/g, ''));
+    return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  }
+
+  function joinBytes(chunks) {
+    const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+    const combined = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+      combined.set(chunk, offset);
+      offset += chunk.length;
+    }
+    return combined;
+  }
+
   async function bootCloud() {
     try {
       const responses = await Promise.all(
@@ -30,9 +46,8 @@
       const failed = responses.find((response) => !response.ok);
       if (failed) throw new Error(`Kunne ikke laste appkjernen (${failed.status})`);
 
-      const chunks = await Promise.all(responses.map((response) => response.text()));
-      const binary = atob(chunks.join('').replace(/\s+/g, ''));
-      const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+      const encodedParts = await Promise.all(responses.map((response) => response.text()));
+      const bytes = joinBytes(encodedParts.map(decodePart));
       const source = repairSource(new TextDecoder().decode(bytes));
 
       if (!source.includes("const VERSION = '2.1.0'")) {
