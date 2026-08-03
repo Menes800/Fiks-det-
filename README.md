@@ -1,15 +1,18 @@
-# Fiks det!
+# Hvor er den?
 
-En liten drifts- og problemløsningssimulator laget med vanlig HTML, CSS og JavaScript.
+En enkel app som husker hvor tingene dine ligger hjemme.
 
-Spilleren får tilfeldige driftssaker og må:
+## Funksjoner
 
-- vurdere alvorlighetsgrad
-- velge første tiltak
-- velge riktig leverandør
-- skrive en kort arbeidsordre
+- søk på navn, rom, kategori, plassering og notater
+- filtrering etter rom eller område
+- legg til, rediger og slett ting
+- kopier plasseringen med ett trykk
+- lokal lagring i nettleseren
+- eksport og import av sikkerhetskopi
+- mobiltilpasset grensesnitt
 
-Svarene gir poeng, streak-bonus og nivåene **Vaktmester**, **Driftsansvarlig**, **Driftsleder** og **Eiendomssjef**. Fremdriften lagres lokalt i nettleseren.
+Appen starter med tre eksempler som kan redigeres eller slettes.
 
 ## Kjør lokalt
 
@@ -23,6 +26,4 @@ python -m http.server 8000
 
 ## GitHub Pages
 
-Repoet inneholder en workflow som publiserer nettsiden automatisk med GitHub Pages når det pushes til `main`.
-
-Første gang må **Settings → Pages → Source** eventuelt settes til **GitHub Actions**.
+Repoet publiseres automatisk med GitHub Pages når det pushes til `main`.
