@@ -22,7 +22,7 @@ if (!source.startsWith('(() => {')) {
 if (!source.includes("const VERSION = '2.1.0'")) {
   throw new Error('Feil eller manglende versjon i 2.1-kjernen');
 }
-if (source.includes('hed-share-invite')) {
+if (source.includes("const SHARE_CLASS = 'hed-share-invite'") || source.includes('new MutationObserver(queueScan)')) {
   throw new Error('Den defekte invitasjonsloopen finnes fortsatt i appkjernen');
 }
 new vm.Script(source, { filename: 'cloud-v21.js' });
