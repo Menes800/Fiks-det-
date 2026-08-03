@@ -5,8 +5,9 @@ const partPaths = Array.from(
   { length: 10 },
   (_, index) => `cloud-v21/part-${String(index + 1).padStart(2, '0')}.b64`,
 );
-const base64 = partPaths.map((path) => readFileSync(path, 'utf8').trim()).join('');
-let source = Buffer.from(base64, 'base64').toString('utf8');
+let source = partPaths
+  .map((path) => Buffer.from(readFileSync(path, 'utf8').trim(), 'base64').toString('utf8'))
+  .join('');
 
 const repairs = [
   ['email: cleanEmail(form.email.value)),', 'email: cleanEmail(form.email.value),'],
@@ -50,6 +51,9 @@ for (const file of [loader, serviceWorker]) {
   if (!file.includes('{ length: 10 }') || !file.includes('./cloud-v21/part-') || !file.includes('.b64?v=1')) {
     throw new Error('Loader eller service worker mangler den komplette apppakken');
   }
+}
+if (!loader.includes('encodedParts.map(decodePart)') || !loader.includes('joinBytes')) {
+  throw new Error('Loaderen dekoder ikke appdelene separat');
 }
 for (const [broken, fixed] of repairs) {
   if (!loader.includes(broken) || !loader.includes(fixed)) {
