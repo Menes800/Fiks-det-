@@ -7,6 +7,7 @@
     ['email: cleanEmail(form.email.value)),', 'email: cleanEmail(form.email.value),'],
     ["toLocaleDateString('v'b-NO')", "toLocaleDateString('nb-NO')"],
     ["icon: row.icon || '📦\", color:", "icon: row.icon || '📦', color:"],
+    ["icon: row.icon || '📦\", kind:", "icon: row.icon || '📦', kind:"],
   ];
 
   function repairSource(input) {
