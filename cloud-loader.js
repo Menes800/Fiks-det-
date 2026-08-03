@@ -1,8 +1,10 @@
 (() => {
   const parts = Array.from(
-    { length: 9 },
-    (_, index) => `./cloud-v21-packed/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
+    { length: 10 },
+    (_, index) => `./cloud-v21/part-${String(index + 1).padStart(2, '0')}.b64?v=1`,
   );
+  const brokenSource = 'email: cleanEmail(form.email.value)),';
+  const fixedSource = 'email: cleanEmail(form.email.value),';
 
   async function bootCloud() {
     try {
@@ -14,16 +16,14 @@
 
       const chunks = await Promise.all(responses.map((response) => response.text()));
       const binary = atob(chunks.join('').replace(/\s+/g, ''));
-      const compressed = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+      const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+      let source = new TextDecoder().decode(bytes);
 
-      if (typeof DecompressionStream !== 'function') {
-        throw new Error('Nettleseren støtter ikke utpakking av appkjernen');
+      const occurrences = source.split(brokenSource).length - 1;
+      if (occurrences !== 1) {
+        throw new Error(`Uventet antall kjente syntaksfeil: ${occurrences}`);
       }
-
-      const stream = new Blob([compressed])
-        .stream()
-        .pipeThrough(new DecompressionStream('gzip'));
-      const source = await new Response(stream).text();
+      source = source.replace(brokenSource, fixedSource);
 
       if (!source.includes("const VERSION = '2.1.0'")) {
         throw new Error('Feil versjon av appkjernen');
