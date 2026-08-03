@@ -8,13 +8,17 @@ const partPaths = Array.from(
 const base64 = partPaths.map((path) => readFileSync(path, 'utf8').trim()).join('');
 let source = Buffer.from(base64, 'base64').toString('utf8');
 
-const brokenSource = 'email: cleanEmail(form.email.value)),';
-const fixedSource = 'email: cleanEmail(form.email.value),';
-const occurrences = source.split(brokenSource).length - 1;
-if (occurrences !== 1) {
-  throw new Error(`Uventet antall kjente syntaksfeil: ${occurrences}`);
+const repairs = [
+  ['email: cleanEmail(form.email.value)),', 'email: cleanEmail(form.email.value),'],
+  ["toLocaleDateString('v'b-NO')", "toLocaleDateString('nb-NO')"],
+];
+for (const [broken, fixed] of repairs) {
+  const occurrences = source.split(broken).length - 1;
+  if (occurrences !== 1) {
+    throw new Error(`Uventet antall forekomster av kjent kildefeil: ${occurrences}`);
+  }
+  source = source.replace(broken, fixed);
 }
-source = source.replace(brokenSource, fixedSource);
 
 if (!source.startsWith('(() => {')) {
   throw new Error('2.1-kjernen kunne ikke rekonstrueres fra delene');
@@ -45,8 +49,10 @@ for (const file of [loader, serviceWorker]) {
     throw new Error('Loader eller service worker mangler den komplette apppakken');
   }
 }
-if (!loader.includes(brokenSource) || !loader.includes(fixedSource)) {
-  throw new Error('Den kontrollerte syntaksreparasjonen mangler i loaderen');
+for (const [broken, fixed] of repairs) {
+  if (!loader.includes(broken) || !loader.includes(fixed)) {
+    throw new Error('En kontrollert kildereparasjon mangler i loaderen');
+  }
 }
 
 console.log(`Hvor er den? 2.1 validert: ${source.length} tegn, ${partPaths.length} deler.`);
