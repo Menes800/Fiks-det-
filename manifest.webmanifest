@@ -1,0 +1,16 @@
+{
+  "name": "Hvor er den?",
+  "short_name": "Hvor er den?",
+  "description": "Husk hvor tingene dine ligger.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "lang": "nb-NO",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,29 +1,26 @@
 # Hvor er den?
 
-En enkel app som husker hvor tingene dine ligger hjemme.
+En iPhone-first PWA som husker hvor tingene dine ligger.
 
-## Funksjoner
+## Dette fungerer
 
-- søk på navn, rom, kategori, plassering og notater
-- filtrering etter rom eller område
-- legg til, rediger og slett ting
-- kopier plasseringen med ett trykk
-- lokal lagring i nettleseren
+- hjemskjerm med nylige ting og mest brukte rom
+- søk på navn, kategori, rom, plassering, detalj og notat
+- legg til bilde fra kamera eller bildebibliotek
+- favoritter
+- romoversikt
+- redigering, deling, kopiering og nylig slettet
 - eksport og import av sikkerhetskopi
-- mobiltilpasset grensesnitt
+- lokal lagring uten konto
+- offline-støtte og installasjon på hjemskjermen
 
-Appen starter med tre eksempler som kan redigeres eller slettes.
+## Installer på iPhone
 
-## Kjør lokalt
+1. Åpne GitHub Pages-lenken i Safari.
+2. Trykk på Del-knappen.
+3. Velg **Legg til på Hjem-skjerm**.
+4. Trykk **Legg til**.
 
-Åpne `index.html` direkte i nettleseren, eller start en enkel lokal server:
+## Begrensninger
 
-```bash
-python -m http.server 8000
-```
-
-Åpne deretter `http://localhost:8000`.
-
-## GitHub Pages
-
-Repoet publiseres automatisk med GitHub Pages når det pushes til `main`.
+Deling og synkronisering mellom flere telefoner krever en backend og innlogging. Dette er ikke aktivert i første versjon. Bilder lagres lokalt i nettleseren, så store mengder bilder kan fylle lagringsplassen.
