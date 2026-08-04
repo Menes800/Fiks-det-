@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate Hvor er den 2.2
+      - name: Validate Hvor er den 2.4
         run: node scripts/validate-v22.mjs
 
   deploy:
