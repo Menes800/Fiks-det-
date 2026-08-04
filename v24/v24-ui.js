@@ -6,8 +6,8 @@
   const W = window.HED23;
   if (!H || !V) return;
 
-  if (W) W.version = '2.4.0';
-  H.version = '2.4.0';
+  if (W) W.version = '2.5.0';
+  H.version = '2.5.0';
   let scheduled = false;
 
   function sectionByTitle(screen, title) {
@@ -120,15 +120,15 @@
     form.closest('.v21-card')?.classList.add('v24-invite-card');
     const emailLabel = form.querySelector('input[name="email"]')?.closest('label');
     if (emailLabel && !emailLabel.querySelector('.v24-invite-note')) {
-      emailLabel.insertAdjacentHTML('beforeend', '<small class="v24-invite-note">Appen lager en sikker lenke. Du velger e-postapp eller melding og trykker selv Send.</small>');
+      emailLabel.insertAdjacentHTML('beforeend', '<small class="v24-invite-note">Skriv inn e-post for å sende invitasjonen direkte, eller la feltet stå tomt for å lage en delbar lenke.</small>');
     }
     const submit = form.querySelector('button[type="submit"]');
-    if (submit && !submit.disabled) submit.textContent = 'Lag lenke og åpne deling';
+    if (submit && !submit.disabled) submit.textContent = 'Send invitasjon';
   }
 
   function updateVersion() {
     const meta = document.querySelector('#about-button .settings-meta');
-    if (meta && meta.textContent !== 'v2.4') meta.textContent = 'v2.4';
+    if (meta && meta.textContent !== 'v2.5') meta.textContent = 'v2.5';
   }
 
   function sync() {
@@ -150,31 +150,11 @@
     H.share = async (payload) => {
       const result = await originalShare(payload);
       if (String(payload?.title || '').includes('Invitasjon')) {
-        setTimeout(() => H.toast?.('Invitasjonen er laget. Velg mottaker og trykk Send i appen du åpnet.'), 150);
+        setTimeout(() => H.toast?.('Invitasjonslenken er klar.'), 150);
       }
       return result;
     };
   }
-
-  window.addEventListener('click', async (event) => {
-    const deleteButton = event.target.closest('[data-v22-delete-list]');
-    if (!deleteButton) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const listId = deleteButton.dataset.v22DeleteList;
-    const list = V.getList?.(listId);
-    if (!list || !confirm(`Slette «${list.name}» permanent?`)) return;
-    deleteButton.disabled = true;
-    try {
-      await V.deleteList(listId);
-      const dialog = document.querySelector('#v22-list-dialog');
-      if (dialog?.open) dialog.close();
-      H.toast?.('Listen er slettet');
-    } catch (error) {
-      deleteButton.disabled = false;
-      H.alert?.('Kunne ikke slette listen', H.errorText(error));
-    }
-  }, true);
 
   const observer = new MutationObserver(schedule);
   observer.observe(document.body, { childList: true, subtree: true });
