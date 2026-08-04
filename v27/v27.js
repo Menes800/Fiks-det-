@@ -132,8 +132,9 @@
   }
 
   function sync() {
-    ensureSuggestion(); ensureAddAnother(); restoreDraft(); groupInvites(); ensureOfflineBadge(); updateSuggestion();
-    const meta = document.querySelector('#about-button .settings-meta'); if (meta) meta.textContent = 'v2.7';
+    ensureSuggestion(); ensureAddAnother(); restoreDraft(); groupInvites(); ensureOfflineBadge();
+    const meta = document.querySelector('#about-button .settings-meta');
+    if (meta && meta.textContent !== 'v2.7') meta.textContent = 'v2.7';
     document.documentElement.classList.add('v27');
   }
   function schedule() { if (scheduled) return; scheduled = true; requestAnimationFrame(() => { scheduled = false; sync(); }); }

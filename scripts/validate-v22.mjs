@@ -27,7 +27,7 @@ const search = readFileSync('v26/v26-search.js', 'utf8');
 const invite = readFileSync('v26/v26-invite.js', 'utf8');
 const reminderMigration = readFileSync('supabase/migrations/20260804112000_v26_item_reminders.sql', 'utf8');
 
-if (!sw.includes("hvor-er-den-v23")) throw new Error('Service worker bruker feil cacheversjon');
+if (!sw.includes("hvor-er-den-v24")) throw new Error('Service worker bruker feil cacheversjon');
 if (!index.includes('v2.7')) throw new Error('Index viser ikke versjon 2.7');
 if (index.includes('./v23/v23-ai.js')) throw new Error('Betalt AI skal fortsatt være satt på pause');
 if (!invite.includes('https://menes800.github.io/Fiks-det-/') || !invite.includes('invitation_code')) throw new Error('Invitasjonsadressen er ikke bevart');
@@ -40,10 +40,13 @@ if (!v27.includes('Finnes allerede') || !v27.includes('keepLocationAfterSave')) 
 if (!v27.includes('Frakoblet – lagrer lokalt') || !v27Css.includes('safe-area')) throw new Error('Mobil- eller offlinepuss mangler');
 if (!inviteFix.includes('Tilbakekalt') || !inviteFix.includes('openAccountSheet')) throw new Error('Tilbakekalling oppdateres ikke på samme skjerm');
 if (!undo.includes('restoreSnapshot') || !undo.includes('data-v27-undo') || !undoCss.includes('.v27-undo-bar')) throw new Error('Angre etter flytting, redigering eller sletting mangler');
+const syncBody = v27.match(/function sync\(\) \{([\s\S]*?)\n  \}/)?.[1] || '';
+if (syncBody.includes('updateSuggestion()')) throw new Error('Forslagsfeltet kan starte en endeløs render-løkke');
+if (!v27.includes("meta.textContent !== 'v2.7'")) throw new Error('Versjonsteksten må bare oppdateres når den er endret');
 
-const assets = ['./v27/v27.css?v=1','./v27/v27-undo.css?v=1','./v27/v27-invites.js?v=1','./v27/v27.js?v=1','./v27/v27-undo.js?v=1'];
+const assets = ['./v27/v27.css?v=1','./v27/v27-undo.css?v=1','./v27/v27-invites.js?v=1','./v27/v27.js?v=2','./v27/v27-undo.js?v=1'];
 for (const asset of assets) if (!index.includes(asset) || !sw.includes(asset)) throw new Error(`${asset} mangler i index eller service worker`);
 if (!(index.indexOf('v27/v27-invites.js') > index.indexOf('v26/v26-search.js'))) throw new Error('2.7 må lastes etter 2.6');
 if (!(index.indexOf('v27/v27.js') < index.indexOf('v27/v27-undo.js'))) throw new Error('Angre-laget må lastes sist');
 
-console.log(`Hvor er den? 2.7 validert: ${scripts.length} klientmoduler, lokale emoji-regler, duplikatkontroll, utkast, rask registrering, angre og mobilpuss.`);
+console.log(`Hvor er den? 2.7 validert: ${scripts.length} klientmoduler, lokale emoji-regler, duplikatkontroll, utkast, rask registrering, angre, mobilpuss og lasting uten render-løkke.`);
