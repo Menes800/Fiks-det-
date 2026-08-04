@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nullstiller Hvor er den?</title>
+<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#f6f5fa;color:#202124}main{text-align:center;padding:24px}p{color:#667085}</style>
+</head>
+<body>
+<main><h1>Nullstiller appen …</h1><p>Du sendes tilbake automatisk.</p></main>
+<script>
+(async()=>{
+  try{
+    const registrations=await navigator.serviceWorker?.getRegistrations?.()||[];
+    await Promise.all(registrations.map((registration)=>registration.unregister()));
+    const keys=await caches?.keys?.()||[];
+    await Promise.all(keys.map((key)=>caches.delete(key)));
+  }catch(error){console.warn(error)}
+  location.replace('./?reset='+Date.now());
+})();
+</script>
+</body>
+</html>

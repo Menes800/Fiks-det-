@@ -26,6 +26,7 @@
 <link rel="stylesheet" href="./v26/v26.css?v=1" />
 <link rel="stylesheet" href="./v27/v27.css?v=1" />
 <link rel="stylesheet" href="./v27/v27-undo.css?v=1" />
+<style>#about-button .v27-version-meta{margin-left:auto;color:var(--muted,#6b7280);font-size:13px;white-space:nowrap}</style>
 <script src="./app-model.js?v=1" defer></script>
 <script src="./app-core.js?v=1" defer></script>
 <script src="./app-render.js?v=1" defer></script>
@@ -64,6 +65,13 @@
 <script src="./ui-3.js?v=1"></script>
 <script src="./ui-4.js?v=1"></script>
 <script src="./ui-mount.js?v=1"></script>
-<script>document.querySelector('#about-button .settings-meta')?.replaceChildren('v2.7');</script>
+<script>
+  const versionMeta = document.querySelector('#about-button .settings-meta');
+  if (versionMeta) {
+    versionMeta.classList.remove('settings-meta');
+    versionMeta.classList.add('v27-version-meta');
+    versionMeta.textContent = 'v2.7';
+  }
+</script>
 </body>
 </html>
