@@ -4,10 +4,17 @@
   const V = window.HED22;
   if (!V || typeof window.navigate !== 'function') return;
 
+  try {
+    if (!window.state && typeof state !== 'undefined') window.state = state;
+    if (!window.getPath && typeof getPath === 'function') window.getPath = getPath;
+  } catch (error) {
+    console.warn('Kunne ikke koble 2.2 til hovedappen', error);
+  }
+
   const originalNavigate = window.navigate;
 
   function showLists(options = {}) {
-    if (globalThis.state) {
+    if (window.state) {
       state.screen = 'lists';
       state.previousScreen = 'lists';
     }
