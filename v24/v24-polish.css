@@ -1,0 +1,4 @@
+/* Små visuelle rettinger etter gjennomgang. */
+.v24-field-heading { display: none; }
+.v24-add-core > .field-with-action { gap: 7px; }
+#v24-wizard .v23-template-card[hidden] { display: none !important; }
