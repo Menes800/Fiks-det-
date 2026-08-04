@@ -149,7 +149,11 @@
   function home() {
     const screen = document.querySelector('[data-screen="home"]'); if (!screen) return; let section = screen.querySelector('.v26-upcoming');
     if (!section) { section = document.createElement('section'); section.className = 'content-block v26-upcoming'; const recent = [...screen.querySelectorAll(':scope > .content-block')].find((entry) => entry.querySelector('h2')?.textContent.trim() === 'Nylig brukt'); recent ? recent.after(section) : screen.append(section); }
-    const entries = upcoming(); section.hidden = !entries.length; if (!entries.length) return;
+    const entries = upcoming(); section.hidden = !entries.length;
+    const signature = JSON.stringify(entries.map((entry) => [entry.id, entry.itemId, entry.title, entry.dueOn, entry.repeatMonths, entry.completedAt]));
+    if (section.dataset.signature === signature) return;
+    section.dataset.signature = signature;
+    if (!entries.length) { section.replaceChildren(); return; }
     section.innerHTML = `<div class="section-title-row"><h2>Kommer snart</h2><span class="muted-count">${entries.length}</span></div><div class="v26-upcoming-list">${entries.map((entry) => { const item = items().find((candidate) => candidate.id === entry.itemId); return `<article class="v26-upcoming-row"><button type="button" class="v26-upcoming-main" data-item-id="${esc(entry.itemId)}"><span>🔔</span><span><strong>${esc(entry.title)}</strong><small>${esc(item?.name || 'Ting')} · ${esc(dueLabel(entry))}</small></span></button><button type="button" class="v26-upcoming-done" data-v26-complete="${esc(entry.itemId)}" aria-label="Marker ferdig">✓</button></article>`; }).join('')}</div>`;
   }
   function syncUi() { ensureFields(); populate(); detail(); home(); }
