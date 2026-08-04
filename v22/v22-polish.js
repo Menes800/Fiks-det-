@@ -5,7 +5,9 @@
   const V = window.HED22;
   if (!H || !V) return;
 
-  H.version = V.version;
+  const appVersion = window.HED23?.version || V.version;
+  const displayVersion = `v${String(appVersion).split('.').slice(0, 2).join('.')}`;
+  H.version = appVersion;
   const originalErrorText = H.errorText;
   H.errorText = (error, fallback) => {
     const message = String(error?.message || error?.error_description || '');
@@ -52,7 +54,7 @@
 
   function updateVersion() {
     const meta = document.querySelector('#about-button .settings-meta');
-    if (meta && meta.textContent !== 'v2.2') meta.textContent = 'v2.2';
+    if (meta && meta.textContent !== displayVersion) meta.textContent = displayVersion;
   }
 
   document.addEventListener('click', (event) => {
