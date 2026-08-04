@@ -244,7 +244,7 @@
     home.classList.add('v25-home');
 
     const searchCopy = home.querySelector('.search-launcher span');
-    if (searchCopy) searchCopy.textContent = 'Søk etter ting eller plassering';
+    if (searchCopy && searchCopy.textContent !== 'Søk etter ting eller plassering') searchCopy.textContent = 'Søk etter ting eller plassering';
 
     home.querySelector('.home-header .round-button[data-open-add]')?.setAttribute('hidden', '');
     home.querySelector('.v24-quick-actions')?.setAttribute('hidden', '');
@@ -284,9 +284,13 @@
         label.append(note);
       }
       note.className = 'v25-invite-note';
-      note.textContent = 'Med e-post sender appen en sikker innloggingslenke. Uten e-post får du en delbar lenke.';
+      const inviteCopy = 'Med e-post sender appen en sikker innloggingslenke. Uten e-post får du en delbar lenke.';
+      if (note.textContent !== inviteCopy) note.textContent = inviteCopy;
     }
-    if (button && !button.disabled) button.textContent = email?.value.trim() ? 'Send invitasjon' : 'Lag delbar lenke';
+    if (button && !button.disabled) {
+      const nextCopy = email?.value.trim() ? 'Send invitasjon' : 'Lag delbar lenke';
+      if (button.textContent !== nextCopy) button.textContent = nextCopy;
+    }
   }
 
   function compactWizard() {
@@ -317,7 +321,7 @@
 
   function updateVersion() {
     const meta = document.querySelector('#about-button .settings-meta');
-    if (meta) meta.textContent = 'v2.5';
+    if (meta && meta.textContent !== 'v2.5') meta.textContent = 'v2.5';
   }
 
   function sync() {
