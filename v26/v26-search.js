@@ -1,0 +1,53 @@
+(() => {
+  'use strict';
+  const H = window.HED21; const V = window.HED22; if (!H || !V) return;
+  const esc = (value) => H.html(String(value ?? '')); const mode = { value: 'all' }; let scheduled = false;
+  const app = () => (typeof state !== 'undefined' ? state : null); const items = () => app()?.data?.items || []; const rooms = () => app()?.data?.rooms || [];
+  const containers = () => app()?.data?.containers || []; const categories = () => app()?.data?.categories || []; const lists = () => V.state?.lists || [];
+  function normalize(value) { return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('nb-NO').replace(/[^a-z0-9æøå]+/g, ' ').trim(); }
+  function stem(word) { const clean = normalize(word); for (const suffix of ['hetene','eringene','ene','heten','ering','erte','ende','en','et','a']) if (clean.length - suffix.length >= 3 && clean.endsWith(suffix)) return clean.slice(0, -suffix.length); return clean; }
+  const stop = new Set(['hvor','er','den','det','hva','ligger','finn','vis','meg','alle','alt','ting','tingen','tingene','i','på','som','har','jeg','mine','våre','etter']);
+  const intents = new Set(['favoritt','favoritter','bilde','bilder','uten','privat','private','liste','lister','plassering','plasseringer','rom']);
+  function entityMatch(name, query, tokens) { const text = normalize(name); const parts = text.split(' ').map(stem); return query.includes(text) || parts.every((part) => tokens.some((token) => stem(token) === part || stem(token).startsWith(part) || part.startsWith(stem(token)))); }
+  function parse(raw) {
+    const query = normalize(raw); const tokens = query.split(' ').filter(Boolean); const matchedRooms = rooms().filter((entry) => entityMatch(entry.name, query, tokens));
+    const matchedContainers = containers().filter((entry) => entityMatch(entry.name, query, tokens) || query.includes(normalize(entry.code)));
+    const matchedCategories = categories().filter((entry) => entityMatch(entry.name, query, tokens));
+    const entityStems = new Set([...matchedRooms, ...matchedContainers, ...matchedCategories].flatMap((entry) => normalize(entry.name).split(' ').map(stem)));
+    const terms = tokens.map(stem).filter((token) => token && !stop.has(token) && !intents.has(token) && !entityStems.has(token));
+    return { query, tokens, terms, matchedRooms, matchedContainers, matchedCategories, noImage: query.includes('uten bilde'), favorite: query.includes('favoritt'), privateOnly: query.includes('privat') };
+  }
+  function textMatch(haystack, terms) { const text = normalize(haystack); if (!terms.length) return true; return terms.every((term) => text.includes(term) || text.split(' ').some((word) => stem(word) === term || stem(word).startsWith(term) || term.startsWith(stem(word)))); }
+  function results(raw) {
+    const parsed = parse(raw); const roomIds = new Set(parsed.matchedRooms.map((entry) => entry.id)); const containerIds = new Set(parsed.matchedContainers.map((entry) => entry.id)); const categoryIds = new Set(parsed.matchedCategories.map((entry) => entry.id));
+    const foundItems = items().filter((item) => {
+      const room = rooms().find((entry) => entry.id === item.roomId); const container = containers().find((entry) => entry.id === item.containerId); const category = categories().find((entry) => entry.id === item.categoryId);
+      if (parsed.noImage && item.image) return false; if (parsed.favorite && !item.favorite) return false; if (parsed.privateOnly && item.visibility !== 'private') return false;
+      if (roomIds.size && !roomIds.has(item.roomId)) return false; if (containerIds.size && !containerIds.has(item.containerId)) return false; if (categoryIds.size && !categoryIds.has(item.categoryId)) return false;
+      return textMatch([item.name, room?.name, container?.name, container?.code, category?.name, item.detail, item.notes, ...(item.tags || [])].join(' '), parsed.terms);
+    }).sort((a, b) => Number(parsed.query.includes(normalize(b.name))) - Number(parsed.query.includes(normalize(a.name))) || Number(b.favorite) - Number(a.favorite) || Number(b.updatedAt) - Number(a.updatedAt));
+    const wantsLocations = parsed.matchedRooms.length || parsed.matchedContainers.length || parsed.terms.length || /\b(hvor|ligger|rom|plassering|bod|skap|skuff|kasse|hylle)\b/.test(parsed.query);
+    const locations = wantsLocations ? [...rooms().filter((entry) => entityMatch(entry.name, parsed.query, parsed.tokens) || (parsed.terms.length && textMatch(entry.name, parsed.terms))), ...containers().filter((entry) => entityMatch(entry.name, parsed.query, parsed.tokens) || parsed.query.includes(normalize(entry.code)) || (parsed.terms.length && textMatch(`${entry.name} ${entry.code}`, parsed.terms)))].filter((entry, index, all) => all.findIndex((candidate) => candidate.id === entry.id) === index).slice(0, 10) : [];
+    const wantsLists = /\bliste(r)?\b/.test(parsed.query) || parsed.terms.length; const foundLists = wantsLists ? lists().filter((list) => !parsed.terms.length || textMatch(`${list.name} ${list.destination || ''} ${list.kind || ''} ${(list.items || []).map((item) => item.title).join(' ')}`, parsed.terms)).slice(0, 8) : [];
+    return { parsed, items: foundItems, locations, lists: foundLists };
+  }
+  function ensurePanel() { const screen = document.querySelector('[data-screen="search"]'); if (!screen) return null; let panel = screen.querySelector('.v26-smart-search'); if (!panel) { panel = document.createElement('section'); panel.className = 'content-block v26-smart-search'; const field = screen.querySelector('.search-field'); field ? field.after(panel) : screen.prepend(panel); } return panel; }
+  function locationRow(entry) {
+    const isRoom = rooms().some((room) => room.id === entry.id); if (isRoom) { const count = items().filter((item) => item.roomId === entry.id).length; return `<button type="button" class="v26-location-result" data-room-id="${esc(entry.id)}"><span>${esc(entry.icon || '📍')}</span><span><strong>${esc(entry.name)}</strong><small>Rom · ${count} ting</small></span><b>›</b></button>`; }
+    const room = rooms().find((candidate) => candidate.id === entry.roomId); const count = items().filter((item) => item.containerId === entry.id).length; return `<button type="button" class="v26-location-result" data-container-id="${esc(entry.id)}"><span>${esc(entry.icon || '📦')}</span><span><strong>${esc(entry.name)}</strong><small>${esc(room?.name || 'Plassering')} · ${count} ting</small></span><b>›</b></button>`;
+  }
+  function render() {
+    const screen = document.querySelector('[data-screen="search"]'); const panel = ensurePanel(); const raw = app()?.query || ''; if (!screen || !panel) return; const active = Boolean(raw.trim());
+    panel.hidden = !active; screen.querySelector('#quick-filter-list')?.toggleAttribute('hidden', active); [...screen.children].filter((child) => child.classList?.contains('content-block') && child !== panel).forEach((child) => { child.hidden = active; }); if (!active) return;
+    const result = results(raw); const itemRows = result.items.slice(0, 30); const showItems = mode.value === 'all' || mode.value === 'items'; const showLocations = mode.value === 'all' || mode.value === 'locations'; const showLists = mode.value === 'all' || mode.value === 'lists';
+    const exact = itemRows.find((item) => result.parsed.query.includes(normalize(item.name))); const path = exact && typeof getPath === 'function' ? getPath(exact) : ''; const total = (showItems ? itemRows.length : 0) + (showLocations ? result.locations.length : 0) + (showLists ? result.lists.length : 0);
+    const signature = JSON.stringify({ raw, mode: mode.value, items: itemRows.map((item) => [item.id, item.updatedAt]), locations: result.locations.map((entry) => entry.id), lists: result.lists.map((list) => [list.id, list.updatedAt, list.items?.length]) });
+    if (panel.dataset.signature === signature) return;
+    panel.dataset.signature = signature;
+    panel.innerHTML = `${exact && path ? `<div class="v26-search-answer"><span>📍</span><div><small>FUNNET</small><strong>${esc(exact.name)} ligger i ${esc(path)}</strong></div></div>` : ''}<div class="v26-search-types">${[['all','Alle'],['items','Ting'],['locations','Plasseringer'],['lists','Lister']].map(([value, label]) => `<button type="button" class="${mode.value === value ? 'is-active' : ''}" data-v26-search-type="${value}">${label}</button>`).join('')}</div>${showItems && itemRows.length ? `<section class="v26-result-group"><div class="section-title-row"><h2>Ting</h2><span class="muted-count">${itemRows.length}</span></div><div class="compact-list">${itemRows.map((item) => typeof itemRowHtml === 'function' ? itemRowHtml(item) : '').join('')}</div></section>` : ''}${showLocations && result.locations.length ? `<section class="v26-result-group"><div class="section-title-row"><h2>Rom og plasseringer</h2><span class="muted-count">${result.locations.length}</span></div><div class="v26-location-results">${result.locations.map(locationRow).join('')}</div></section>` : ''}${showLists && result.lists.length ? `<section class="v26-result-group"><div class="section-title-row"><h2>Lister</h2><span class="muted-count">${result.lists.length}</span></div><div class="v26-list-results">${result.lists.map((list) => `<button type="button" data-v22-open-list="${esc(list.id)}"><span>✓</span><span><strong>${esc(list.name)}</strong><small>${esc(list.destination || (list.items?.length ? `${list.items.length} punkter` : 'Liste'))}</small></span><b>›</b></button>`).join('')}</div></section>` : ''}${!total ? '<div class="empty-state empty-state--inline"><h3>Ingen treff</h3><p>Prøv navnet på en ting, et rom, en plassering eller en liste.</p></div>' : ''}`;
+  }
+  function schedule() { if (scheduled) return; scheduled = true; requestAnimationFrame(() => { scheduled = false; render(); }); }
+  window.addEventListener('input', (event) => { if (event.target.matches('#search-input')) schedule(); }, true);
+  window.addEventListener('click', (event) => { const button = event.target.closest('[data-v26-search-type]'); if (!button) return; event.preventDefault(); event.stopImmediatePropagation(); mode.value = button.dataset.v26SearchType; render(); }, true);
+  document.addEventListener('hed22:changed', schedule); new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true }); V.ready?.then(schedule).catch?.(schedule); schedule();
+})();
