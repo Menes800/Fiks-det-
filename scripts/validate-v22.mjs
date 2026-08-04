@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const scripts = [
   'v21/v21-client.js','v21/v21-account.js','v21/v21-invite.js','v21/v21-qr.js','v21/v21-polish.js',
   'v22/v22-data.js','v23/v23-catalog.js','v24/v24-rules.js','v24/v24-guard.js','v24/v24-wizard.js',
-  'v22/v22-mobile-hotfix.js','v22/v22-lists.js','v22/v22-compact-ui.js','v22/v22-bridge.js','v22/v22-polish.js','v24/v24-ui.js',
+  'v22/v22-mobile-hotfix.js','v22/v22-lists.js','v22/v22-compact-ui.js','v22/v22-bridge.js','v22/v22-polish.js','v24/v24-ui.js','v25/v25.js',
 ];
 
 for (const path of scripts) {
@@ -24,11 +24,13 @@ const wizard = readFileSync('v24/v24-wizard.js', 'utf8');
 const ui = readFileSync('v24/v24-ui.js', 'utf8');
 const css = readFileSync('v24/v24.css', 'utf8');
 const polishCss = readFileSync('v24/v24-polish.css', 'utf8');
+const v25 = readFileSync('v25/v25.js', 'utf8');
+const v25Css = readFileSync('v25/v25.css', 'utf8');
 const compactUi = readFileSync('v22/v22-compact-ui.js', 'utf8');
 const compactCss = readFileSync('v22/v22-compact-ui.css', 'utf8');
 
-if (!sw.includes("hvor-er-den-v19")) throw new Error('Service worker bruker feil cacheversjon');
-if (!index.includes('v2.4')) throw new Error('Index viser ikke versjon 2.4');
+if (!sw.includes("hvor-er-den-v20")) throw new Error('Service worker bruker feil cacheversjon');
+if (!index.includes('v2.5')) throw new Error('Index viser ikke versjon 2.5');
 if (index.includes('./v23/v23-ai.js') || index.includes('./v23/v23-wizard.js')) throw new Error('AI-versjonen skal være satt på pause i klienten');
 if (!catalog.includes("name: 'Reise med kjæledyr'") || catalog.includes('Tica')) throw new Error('Kjæledyrmalen er ikke generell');
 for (const key of ['weekend','sun','cabin','work','day','sport','pet','moving','shopping']) {
@@ -38,16 +40,19 @@ if (!rules.includes("W.aiPaused = true") || !rules.includes('clothingDays') || !
 if (!rules.includes("Forslag for ${windowDays} dager") || !rules.includes('Væsker i beholdere på maks 100 ml')) throw new Error('Reglene for lange turer eller håndbagasje mangler');
 if (!wizard.includes('SMART UTEN AI') || !wizard.includes('data-v24-preview') || !wizard.includes('Kan klær vaskes underveis?')) throw new Error('Den nye malbyggeren er ufullstendig');
 if (!guard.includes('draft.days') || !guard.includes('stopImmediatePropagation') || !guard.includes('filterTemplates')) throw new Error('Manuelle dager eller malsøk kan gå tapt');
-if (!ui.includes('v24-home') || !ui.includes('v24-more-details') || !ui.includes('[data-v22-delete-list]')) throw new Error('Hjem, legg til ting eller sletting er ikke rettet');
-if (!ui.includes('Appen lager en sikker lenke') || !ui.includes('Lag lenke og åpne deling')) throw new Error('Invitasjonsflyten er fortsatt misvisende');
-if (!css.includes('.v24-home-summary') || !css.includes('.v24-location-card') || !css.includes('.v24-rule-intro')) throw new Error('2.4-stilen er ufullstendig');
+if (!ui.includes('v24-home') || !ui.includes('v24-more-details') || !ui.includes("H.version = '2.5.0'")) throw new Error('Det eksisterende UI-laget er ikke klart for 2.5');
+if (!v25.includes('signInWithOtp') || !v25.includes('data-v22-delete-list') || !v25.includes('v25-action-dialog')) throw new Error('E-postinvitasjoner eller egne dialoger mangler');
+if (!v25.includes('Tilpass mer') || !v25.includes('Rom og plasseringer')) throw new Error('Malbyggeren eller hjemskjermen er ikke komprimert');
+if (!css.includes('.v24-home-summary') || !css.includes('.v24-location-card') || !css.includes('.v24-rule-intro')) throw new Error('2.4-grunnstilen er ufullstendig');
 if (!polishCss.includes('.v24-field-heading')) throw new Error('Siste skjemafinpuss mangler');
+if (!v25Css.includes('.v25-action-dialog') || !v25Css.includes('.v25-wizard-more') || !v25Css.includes('.v25-home')) throw new Error('2.5-stilen er ufullstendig');
 if (!compactUi.includes('v22-is-unpack') || !compactCss.includes('.v22-quick-add')) throw new Error('Kompakt listevisning mangler');
 if (readFileSync('v21/v21-polish.js', 'utf8').includes('characterData: true')) throw new Error('Den gamle frysefeilen er tilbake');
 
 const assets = [
   './v24/v24.css?v=1','./v24/v24-polish.css?v=1','./v24/v24-rules.js?v=1',
-  './v24/v24-guard.js?v=1','./v24/v24-wizard.js?v=1','./v24/v24-ui.js?v=1',
+  './v24/v24-guard.js?v=1','./v24/v24-wizard.js?v=1','./v24/v24-ui.js?v=2',
+  './v25/v25.css?v=1','./v25/v25.js?v=1',
 ];
 for (const asset of assets) {
   if (!index.includes(asset) || !sw.includes(asset)) throw new Error(`${asset} mangler i index eller service worker`);
@@ -55,6 +60,7 @@ for (const asset of assets) {
 if (!(index.indexOf('v24/v24-rules.js') < index.indexOf('v24/v24-guard.js'))) throw new Error('Regelmotoren må lastes før valgbevaring');
 if (!(index.indexOf('v24/v24-guard.js') < index.indexOf('v24/v24-wizard.js'))) throw new Error('Valgbevaring må lastes før malbyggeren');
 if (!(index.indexOf('v24/v24-wizard.js') < index.indexOf('v22/v22-lists.js'))) throw new Error('Ny malbygger må fange klikk før gammel malhåndtering');
-if (!(index.indexOf('v24/v24-ui.js') > index.indexOf('v22/v22-polish.js'))) throw new Error('2.4-oppryddingen må lastes sist');
+if (!(index.indexOf('v24/v24-ui.js') > index.indexOf('v22/v22-polish.js'))) throw new Error('2.4-oppryddingen må lastes etter eldre lag');
+if (!(index.indexOf('v25/v25.js') > index.indexOf('v24/v24-ui.js'))) throw new Error('2.5-laget må lastes sist');
 
-console.log(`Hvor er den? 2.4 validert: ${scripts.length} klientmoduler, forbedret regelmotor, bevarte manuelle valg, kompakt hjem, kortere registrering, tydelige invitasjoner og fungerende listesletting.`);
+console.log(`Hvor er den? 2.5 validert: ${scripts.length} klientmoduler, e-postinvitasjoner, egne dialoger, kompakt malbygger og ryddigere hjem.`);
