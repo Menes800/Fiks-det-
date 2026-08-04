@@ -1,4 +1,4 @@
-const CACHE = 'hvor-er-den-v23';
+const CACHE = 'hvor-er-den-v24';
 const ASSETS = [
   './', './index.html', './styles.css?v=4', './v1.css?v=1', './cloud.css?v=1',
   './v21/v21-modular.css?v=1', './v22/v22.css?v=1', './v22/v22-compact-ui.css?v=1', './v23/v23.css?v=1', './v24/v24.css?v=1', './v24/v24-polish.css?v=1', './v25/v25.css?v=1', './v26/v26.css?v=1', './v27/v27.css?v=1', './v27/v27-undo.css?v=1',
@@ -10,7 +10,7 @@ const ASSETS = [
   './v22/v22-data.js?v=1', './v23/v23-catalog.js?v=1', './v24/v24-rules.js?v=1', './v24/v24-guard.js?v=1', './v24/v24-wizard.js?v=1',
   './v22/v22-mobile-hotfix.js?v=1', './v22/v22-lists.js?v=1', './v22/v22-compact-ui.js?v=1', './v22/v22-bridge.js?v=1', './v22/v22-polish.js?v=1', './v24/v24-ui.js?v=2', './v25/v25.js?v=1',
   './v26/v26-invite.js?v=1', './v26/v26-reminders.js?v=1', './v26/v26-search.js?v=1',
-  './v27/v27-invites.js?v=1', './v27/v27.js?v=1', './v27/v27-undo.js?v=1',
+  './v27/v27-invites.js?v=1', './v27/v27.js?v=2', './v27/v27-undo.js?v=1',
   './ui-1.js?v=1', './ui-2.js?v=1', './ui-3.js?v=1', './ui-4.js?v=1', './ui-mount.js?v=1',
   './manifest.webmanifest', './icon.svg',
 ];
