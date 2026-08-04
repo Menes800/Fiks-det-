@@ -1,7 +1,7 @@
 const CACHE = 'hvor-er-den-v19';
 const ASSETS = [
   './', './index.html', './styles.css?v=4', './v1.css?v=1', './cloud.css?v=1',
-  './v21/v21-modular.css?v=1', './v22/v22.css?v=1', './v22/v22-compact-ui.css?v=1', './v23/v23.css?v=1', './v24/v24.css?v=1',
+  './v21/v21-modular.css?v=1', './v22/v22.css?v=1', './v22/v22-compact-ui.css?v=1', './v23/v23.css?v=1', './v24/v24.css?v=1', './v24/v24-polish.css?v=1',
   './app-model.js?v=1', './app-core.js?v=1', './app-render.js?v=1',
   './app-items.js?v=1', './app-managers.js?v=1', './app-events.js?v=2',
   './supabase-config.js?v=1', './cloud-loader.js?v=3', './cloud.js.gz?v=1',
