@@ -35,7 +35,7 @@ if (!reminderMigration.includes('enable row level security')) throw new Error('R
 if (!v27.includes("H.version = '2.7.0'") || !v27.includes('RULES') || !v27.includes('nøkkel') || !v27.includes('batteridrill')) throw new Error('Emoji- og kategorireglene mangler');
 if (!v27.includes('DRAFT_KEY') || !v27.includes('Lagre og legg til en ting til her')) throw new Error('Utkast eller rask registrering mangler');
 if (!v27.includes('Finnes allerede') || !v27.includes('keepLocationAfterSave')) throw new Error('Duplikatkontroll eller behold plassering mangler');
-if (!v27.includes('Frakoblet – lagrer lokalt') || !v27.includes('safe-area')) throw new Error('Mobil- eller offlinepuss mangler');
+if (!v27.includes('Frakoblet – lagrer lokalt') || !v27Css.includes('safe-area')) throw new Error('Mobil- eller offlinepuss mangler');
 if (!inviteFix.includes('Tilbakekalt') || !inviteFix.includes('openAccountSheet')) throw new Error('Tilbakekalling oppdateres ikke på samme skjerm');
 if (!v27Css.includes('.v27-smart-suggestion') || !v27Css.includes('.v27-old-invites') || !v27Css.includes('100dvh')) throw new Error('2.7-stilen er ufullstendig');
 
